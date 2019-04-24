@@ -35,7 +35,6 @@ public:
 	int projectionLocation;
 
 	glm::vec3 lightCol;
-	glm::vec3 b_scaleFactor;
 
 	float ambientIntensity;
 
@@ -60,7 +59,7 @@ public:
 
 	Texture texture;
 
-	void init(int w, int h);
+	void init(float xScale, float yScale, float zScale, int w, int h, float xPos, float yPos, float zPos, std::string texturePath);
 	void update(Camera cam);
 	void render();
 	void setBuffers();

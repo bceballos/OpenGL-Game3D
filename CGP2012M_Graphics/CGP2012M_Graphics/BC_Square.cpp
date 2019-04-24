@@ -11,7 +11,7 @@ BC_Square::~BC_Square()
 {
 }
 
-void BC_Square::init(int w, int h)
+void BC_Square::init(float xScale, float yScale, float zScale, int w, int h, float xPos, float yPos, float zPos, std::string texturePath)
 {
 	//shaders
 	vsh.shaderFileName("..//..//Assets//Shaders//shader_Projection_basicLight.vert");
@@ -28,8 +28,8 @@ void BC_Square::init(int w, int h)
 	glDeleteShader(vsh.shaderID);
 	glDeleteShader(fsh.shaderID);
 
-	texture.load("..//..//Assets//Textures//space.png");
-	
+	texture.load(texturePath.c_str());
+
 	ambientIntensity = 1.0f;
 	lightCol = glm::vec3(1.0f, 1.0f, 0.98f);
 
@@ -40,10 +40,8 @@ void BC_Square::init(int w, int h)
 	backgroundScale = glm::mat4(1.0f);
 	backgroundTranslate = glm::mat4(1.0f);
 
-	b_scaleFactor = { 60.0f, 50.0f, 1.0f };
-
-	backgroundScale = glm::scale(backgroundScale, glm::vec3(b_scaleFactor));
-	backgroundTranslate = glm::translate(backgroundTranslate, glm::vec3(0.0f, 0.0f, -2.0f));
+	backgroundScale = glm::scale(backgroundScale, glm::vec3(xScale, yScale, zScale));
+	backgroundTranslate = glm::translate(backgroundTranslate, glm::vec3(xPos, yPos, zPos));
 
 	setBuffers();
 }

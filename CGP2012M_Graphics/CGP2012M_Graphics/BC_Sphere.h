@@ -1,5 +1,8 @@
 #pragma once
-#include "Model.h"
+#include <iostream>
+#include <GL/glew.h>
+#include <vector>
+#include "ShaderClass.h"
 #include "ModelLoaderClass.h"
 
 #include <glm/glm.hpp>
@@ -11,11 +14,31 @@
 #include "Camera.h"
 
 #include <cstring>
-class BC_Model
+class BC_Sphere
 {
 public:
-	BC_Model();
-	~BC_Model();
+	BC_Sphere();
+	~BC_Sphere();
+
+	//vertex/texture coord/normal containers for the model
+	std::vector<glm::vec3> vertices;
+	std::vector<GLuint> indices;
+	std::vector<glm::vec2> texCoords;
+	std::vector<glm::vec3> normals;
+
+	//interleaved vertex, texture, normal data
+	//more efficient than separate VBO's
+	std::vector<GLfloat> modelData;
+
+	//set up vertex buffer object
+	GLuint VBO;
+	//set up vertex array object
+	GLuint VAO;
+	//set up index buffer object
+	//GLuint EBO;
+	//shader for the model
+	Shader vSh, fSh;
+	GLuint shaderProgram;
 
 	Model model;
 	ModelImport modelLoader;
@@ -46,5 +69,6 @@ public:
 	void init(int w, int h, std::string modelPath, std::string texturePath);
 	void update(GLuint elapsedTime, Camera cam);
 	void render();
+	void setBuffers();
 };
 

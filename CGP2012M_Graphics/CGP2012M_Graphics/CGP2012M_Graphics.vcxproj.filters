@@ -45,9 +45,6 @@
     <ClInclude Include="CircleTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Square.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -66,12 +63,18 @@
     <ClInclude Include="BC_Square.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BC_Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Week10_Lighting+Diffuse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BC_Square.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BC_Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

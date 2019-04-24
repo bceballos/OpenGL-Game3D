@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BC_Model.h" />
     <ClInclude Include="BC_Square.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Circle.h" />
@@ -30,7 +31,6 @@
     <ClInclude Include="SDL_Start.h" />
     <ClInclude Include="SDL_ttf.h" />
     <ClInclude Include="ShaderClass.h" />
-    <ClInclude Include="Square.h" />
     <ClInclude Include="TextureClass.h" />
     <ClInclude Include="Textures.h" />
     <ClInclude Include="Triangle.h" />
@@ -38,6 +38,7 @@
     <ClInclude Include="Triangle_T.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BC_Model.cpp" />
     <ClCompile Include="BC_Square.cpp" />
     <ClCompile Include="Week10_Lighting+Diffuse.cpp" />
   </ItemGroup>

@@ -63,7 +63,10 @@
     <ClInclude Include="BC_Square.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BC_Model.h">
+    <ClInclude Include="BC_Sphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BC_Cube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -74,7 +77,10 @@
     <ClCompile Include="BC_Square.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BC_Model.cpp">
+    <ClCompile Include="BC_Sphere.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BC_Cube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

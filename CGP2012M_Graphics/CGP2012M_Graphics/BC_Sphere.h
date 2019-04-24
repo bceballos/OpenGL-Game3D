@@ -37,10 +37,9 @@ public:
 	//set up index buffer object
 	//GLuint EBO;
 	//shader for the model
-	Shader vSh, fSh;
+	Shader vsh, fsh;
 	GLuint shaderProgram;
 
-	Model model;
 	ModelImport modelLoader;
 
 	Texture texture;

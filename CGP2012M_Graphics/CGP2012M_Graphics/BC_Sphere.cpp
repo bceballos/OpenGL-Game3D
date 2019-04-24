@@ -16,21 +16,21 @@ void BC_Sphere::init(int w, int h,std::string modelPath, std::string texturePath
 	//shaders
 	//vSh.shaderFileName("..//..//Assets//Shaders//shader_Projection_basicLight.vert");
 	//fSh.shaderFileName("..//..//Assets//Shaders//shader_Projection_basicLight.frag");
-	vSh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_AD.vert");
-	fSh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_AD.frag");
+	vsh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_AD.vert");
+	fsh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_AD.frag");
 
-	vSh.getShader(1);
-	fSh.getShader(2);
+	vsh.getShader(1);
+	fsh.getShader(2);
 
 	shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vSh.shaderID);
-	glAttachShader(shaderProgram, fSh.shaderID);
+	glAttachShader(shaderProgram, vsh.shaderID);
+	glAttachShader(shaderProgram, fsh.shaderID);
 	glLinkProgram(shaderProgram);
 
-	glDeleteShader(vSh.shaderID);
-	glDeleteShader(fSh.shaderID);
+	glDeleteShader(vsh.shaderID);
+	glDeleteShader(fsh.shaderID);
 
-	modelLoader.LoadOBJ2(modelPath.c_str(), vertices, texCoords, normals, indices);
+	modelLoader.LoadOBJ2(modelPath.c_str(), this->vertices, this->texCoords, this->normals, this->indices);
 	texture.load(texturePath.c_str());
 
 	lightPosition = glm::vec3(1.0f, 0.0f, 0.5f);
@@ -47,7 +47,7 @@ void BC_Sphere::init(int w, int h,std::string modelPath, std::string texturePath
 	projectionMatrix = glm::perspective(glm::radians(45.0f), (float)w / (float)h, 0.1f, 100.0f);
 
 	texture.setBuffers();
-	model.setBuffers();
+	setBuffers();
 }
 
 void BC_Sphere::update(GLuint elapsedTime, Camera cam)
@@ -55,7 +55,7 @@ void BC_Sphere::update(GLuint elapsedTime, Camera cam)
 	viewMatrix = glm::lookAt(glm::vec3(cam.camXPos, cam.camYPos, cam.camZPos), cam.cameraTarget, cam.cameraUp);
 
 	////set .obj model
-	glUseProgram(model.shaderProgram);
+	glUseProgram(shaderProgram);
 	//lighting uniforms
 	//get and set light colour and position uniform
 	lightColLocation = glGetUniformLocation(shaderProgram, "lightCol");
@@ -75,7 +75,7 @@ void BC_Sphere::update(GLuint elapsedTime, Camera cam)
 	//So we calculate the normal matrix in that space
 	normalMatrix = glm::transpose(glm::inverse(modelTranslate*modelRotate*modelScale * viewMatrix));
 	//set the normalMatrix in the shaders
-	glUseProgram(model.shaderProgram);
+	glUseProgram(shaderProgram);
 	normalMatrixLocation = glGetUniformLocation(shaderProgram, "uNormalMatrix");
 	glUniformMatrix4fv(normalMatrixLocation, 1, GL_FALSE, glm::value_ptr(normalMatrix));
 	glBindTexture(GL_TEXTURE_2D, texture.texture);
@@ -83,7 +83,6 @@ void BC_Sphere::update(GLuint elapsedTime, Camera cam)
 
 void BC_Sphere::render()
 {
-	model.render();
 	//draw the square 
 	glBindVertexArray(VAO);
 	//glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
@@ -93,6 +92,19 @@ void BC_Sphere::render()
 
 void BC_Sphere::setBuffers()
 {
+	////interleave the vertex/texture/normal data
+	for (int i = 0; i < indices.size(); i += 3)
+	{
+		modelData.push_back(vertices[indices[i]].x);
+		modelData.push_back(vertices[indices[i]].y);
+		modelData.push_back(vertices[indices[i]].z);
+		modelData.push_back(texCoords[indices[i + 1]].x);
+		modelData.push_back(texCoords[indices[i + 1]].y);
+		modelData.push_back(normals[indices[i + 2]].x);
+		modelData.push_back(normals[indices[i + 2]].y);
+		modelData.push_back(normals[indices[i + 2]].z);
+
+	}
 	std::cout << sizeof(modelData[0]) << std::endl;
 	std::cout << modelData.size() << std::endl;
 	//

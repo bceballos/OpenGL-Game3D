@@ -25,7 +25,7 @@ public:
 	//set up index buffer object
 	//GLuint EBO;
 	//shader for the model
-	Shader vSh, fSh;
+	Shader vsh, fsh;
 	GLuint shaderProgram;
 
 	//constructor
@@ -34,19 +34,19 @@ public:
 		//shaders
 		//vSh.shaderFileName("..//..//Assets//Shaders//shader_Projection_basicLight.vert");
 		//fSh.shaderFileName("..//..//Assets//Shaders//shader_Projection_basicLight.frag");
-		vSh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_AD.vert");
-		fSh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_AD.frag");
+		vsh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_AD.vert");
+		fsh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_AD.frag");
 
-		vSh.getShader(1);
-		fSh.getShader(2);
+		vsh.getShader(1);
+		fsh.getShader(2);
 
 		shaderProgram = glCreateProgram();
-		glAttachShader(shaderProgram, vSh.shaderID);
-		glAttachShader(shaderProgram, fSh.shaderID);
+		glAttachShader(shaderProgram, vsh.shaderID);
+		glAttachShader(shaderProgram, fsh.shaderID);
 		glLinkProgram(shaderProgram);
 
-		glDeleteShader(vSh.shaderID);
-		glDeleteShader(fSh.shaderID);
+		glDeleteShader(vsh.shaderID);
+		glDeleteShader(fsh.shaderID);
 	};
 
 

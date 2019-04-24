@@ -44,6 +44,7 @@
 // MY INCLUDES
 #include "BC_Square.h"
 #include "BC_Sphere.h"
+#include "BC_Cube.h"
 
 /* 
 
@@ -158,7 +159,10 @@ int main(int argc, char *argv[]) {
 	//could make this better by specifying the texture in this model header
 
 	BC_Sphere sphere;
-	sphere.init(w, h,"..//..//Assets//Models//blenderSphere.obj", "..//..//Assets//Textures//deathstar.png");
+	sphere.init(w, h,"..//..//Assets//Models//blenderCube.obj", "..//..//Assets//Textures//deathstar.png");
+
+	BC_Cube cube;
+	cube.init(w, h, "..//..//Assets//Textures//United_Kingdom.png");
 
 	//*****************************************
 	//set uniform variables
@@ -227,27 +231,7 @@ int main(int argc, char *argv[]) {
 		sphere.update(elapsedTime, cam);
 		sphere.render();
 
-		////set cube
-		//glUseProgram(cube.shaderProgram);
-		////lighting uniforms
-		////get and set light colour and position uniform
-		//lightColLocation = glGetUniformLocation(cube.shaderProgram, "lightCol");
-		//glUniform3fv(lightColLocation, 1, glm::value_ptr(lightColour));
-		//lightPositionLocation = glGetUniformLocation(cube.shaderProgram, "lightPosition");
-		//glUniform3fv(lightPositionLocation, 1, glm::value_ptr(lightPosition));
-		////rotation
-		//cubeRotate = glm::rotate(cubeRotate, (float)elapsedTime / 1000, glm::vec3(1.0f, 1.0f, 0.0f));
-		//cubeModelLocation = glGetUniformLocation(cube.shaderProgram, "uModel");
-		//glUniformMatrix4fv(cubeModelLocation, 1, GL_FALSE, glm::value_ptr(cubeTranslate*cubeRotate*cubeScale));
-		//cubeViewLocation = glGetUniformLocation(cube.shaderProgram, "uView");
-		//glUniformMatrix4fv(cubeViewLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-		//cubeProjectionLocation = glGetUniformLocation(cube.shaderProgram, "uProjection");
-		//glUniformMatrix4fv(cubeProjectionLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-		////set the normal matrix to send to the vertex shader
-		//normalMatrix = (glm::mat3)glm::transpose(glm::inverse(cubeTranslate*cubeRotate*cubeScale));
-		////set the normalMatrix in the shaders
-		//normalMatrixLocation = glGetUniformLocation(cube.shaderProgram, "uNormalMatrix");
-		//glUniformMatrix4fv(normalMatrixLocation, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+		//cube.update(elapsedTime, cam);
 		//cube.render();
 
 		//set to wireframe so we can see the circles

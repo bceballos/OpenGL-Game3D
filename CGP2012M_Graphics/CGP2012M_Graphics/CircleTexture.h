@@ -17,7 +17,7 @@ public:
 	//set up texture
 	Texture tex;
 	//shaders
-	Shader vSh, fSh;
+	Shader vsh, fsh;
 	GLuint shaderProgram;
 	//position
 	float x, y;
@@ -94,19 +94,19 @@ public:
 		}
 
 		//shaders
-		vSh.shaderFileName("..//..//Assets//Shaders//shader_vColour_Projection.vert");
-		fSh.shaderFileName("..//..//Assets//Shaders//shader_vColour_Projection.frag");
+		vsh.shaderFileName("..//..//Assets//Shaders//shader_vColour_Projection.vert");
+		fsh.shaderFileName("..//..//Assets//Shaders//shader_vColour_Projection.frag");
 
-		vSh.getShader(1);
-		fSh.getShader(2);
+		vsh.getShader(1);
+		fsh.getShader(2);
 
 		shaderProgram = glCreateProgram();
-		glAttachShader(shaderProgram, vSh.shaderID);
-		glAttachShader(shaderProgram, fSh.shaderID);
+		glAttachShader(shaderProgram, vsh.shaderID);
+		glAttachShader(shaderProgram, fsh.shaderID);
 		glLinkProgram(shaderProgram);
 
-		glDeleteShader(vSh.shaderID);
-		glDeleteShader(fSh.shaderID);
+		glDeleteShader(vsh.shaderID);
+		glDeleteShader(fsh.shaderID);
 
 		//load the texture file
 		tex.load("..//..//Assets//Textures//bubble.png");

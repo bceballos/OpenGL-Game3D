@@ -42,6 +42,43 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+// MY INCLUDES
+#include "BC_Square.h"
+
+
+/* 
+
+TO DO LIST
+
+	3D GEOMETRY:
+		- VISIBLE 3D GEOMETRY FOR BUBBLES AND PLAYER !
+		- VISIBLE GEOMETRY FOR WORLD BOUNDARIES
+		- VISIBLE SKYBOX
+		  OBJ MODELS ARE LOADED & TEXTURES ARE LOADED WITHIN MAIN CODE
+		- OBJ FILES ARE LOADED WITH TEXTURE AND NORMAL DATA 
+
+	PLAYABLE GAME:
+		- CHARACTER CAN MOVE / ROTATE, BUBBLES MOVE !
+		- BUBBLES ARE CONSTRAINED WITHIN WORLD BOUNDARIES !
+		- BUBBLES ARE DESTROYED WHEN FIRED AT !
+		- PLAYER HAS 3 LIVES SHOWN ON A 2D HUD !
+		- OTHER GAMEPLAY FEATURE 
+
+	LIGHTING & TEXTURES:
+		- ALL GEOMETRY IS TEXTURED 
+		  LIGHTING IN SCENE FROM ONE LIGHT SOURCE
+		- LIGHTING IN SCENE FROM MULTIPLE SOURCES 
+		- DYNAMIC LIGHTING (SPOTLIGHT)
+		- DIFFERENT LIGHTING MODELS SELECTED
+
+	SHADERS:
+		  SHADERS ARE IN THEIR OWN FILES
+		  VARIABLE DATA IS PASSED
+		- RANDOM COLORING OF BUBBLES
+		  GEOMETRY AND TEXTURES IS MANIPULATED
+		- GEOMETRY AND TEXTURES ARE ANIMATED
+*/
+
 //***************
 //variables
 SDL_Event event;
@@ -75,8 +112,8 @@ glm::mat4 normalMatrix;
 glm::mat4 translate;
 glm::mat4 rotate;
 glm::mat4 scale;
-glm::mat4 backgroundTranslate;
-glm::mat4 backgroundScale;
+////glm::mat4 backgroundTranslate;
+////glm::mat4 backgroundScale;
 glm::vec3 b_scaleFactor;
 glm::mat4 modelRotate;
 glm::mat4 modelScale;
@@ -98,7 +135,6 @@ float ambientIntensity;
 
 //**************
 //function prototypes
-CircleTexture updatePositions(CircleTexture c);
 void handleInput();
 
 int main(int argc, char *argv[]) {
@@ -111,26 +147,9 @@ int main(int argc, char *argv[]) {
 	glViewport(0, 0, w, h);
 	aspect = (float)w / (float)h;
 
-	//error class
-	GLerror glerr;
-	int errorLabel;
-
 	//GLEW initialise
 	glewExperimental = GL_TRUE;
 	GLenum err = glewInit();
-
-	//register debug callback
-	if (glDebugMessageCallback)
-	{
-		std::cout << "Registering OpenGL Debug callback function" << std::endl;
-		glDebugMessageCallback(glerr.openglCallbackFunction, &errorLabel);
-		glDebugMessageControl(GL_DONT_CARE,
-			GL_DONT_CARE,
-			GL_DONT_CARE,
-			0,
-			NULL,
-			true);
-	}
 
 	//*****************************************************
 	//OpenGL specific data
@@ -142,7 +161,8 @@ int main(int argc, char *argv[]) {
 
 	//objects
 	//create background square
-	Square background;
+	BC_Square background;
+	background.init(w, h);
 	//create model
 	//could make this better by specifying the texture in this model header
 	Model model;
@@ -150,36 +170,31 @@ int main(int argc, char *argv[]) {
 	ModelImport modelLoader; 
 	modelLoader.LoadOBJ2("..//..//Assets//Models//blenderSphere.obj", model.vertices, model.texCoords, model.normals, model.indices);
 
-	errorLabel = 0;
-
 	//*********************
 	//create texture collection
 	//create textures - space for 4, but only using 2
 	Texture texArray[4];
 	//background texture
-	texArray[0].load("..//..//Assets//Textures//space.png");
-	texArray[0].setBuffers();
+	////texArray[0].load("..//..//Assets//Textures//space.png");
+	////texArray[0].setBuffers();
 	texArray[1].load("..//..//Assets//Textures//deathstar.png");
 	texArray[1].setBuffers();
 
-	errorLabel = 2;
-
 	//OpenGL buffers
-	background.setBuffers();
+	///*background.setBuffers();*/
 	model.setBuffers();
 
-	errorLabel = 3;
 	//*****************************************
 	//set uniform variables
 	int transformLocation;
-	int modelLocation;
-	int viewLocation;
-	int projectionLocation;
+	////int modelLocation;
+	////int viewLocation;
+	////int projectionLocation;
 	int importModelLocation;
 	int importViewLocation;
 	int importProjectionLocation;
-	int backgroundColourLocation;
-	int ambientIntensityLocation;
+	///*int backgroundColourLocation;*/
+	///*int ambientIntensityLocation;*/
 	int modelColourLocation;
 	int modelAmbientLocation;
 	int lightColLocation;
@@ -206,29 +221,25 @@ int main(int argc, char *argv[]) {
 	lightCol = glm::vec3(1.0f, 1.0f, 0.98f);
 
 	//initialise transform matrices 
-	//orthographic (2D) projection
-	//projectionMatrix = glm::ortho(0.0f, 4.0f, 0.0f, 3.0f, -1.0f, 100.0f);
 	//perspective (3D) projection
 	projectionMatrix = glm::perspective(glm::radians(45.0f), (float)w / (float)h, 0.1f, 100.0f);
 	//initialise view matrix to '1'
 	viewMatrix = glm::mat4(1.0f);
 
-	backgroundScale = glm::mat4(1.0f);
-	backgroundTranslate = glm::mat4(1.0f);
+	////backgroundScale = glm::mat4(1.0f);
+	////backgroundTranslate = glm::mat4(1.0f);
 	modelScale = glm::mat4(1.0f);
 	modelRotate = glm::mat4(1.0f);
 	modelTranslate = glm::mat4(1.0f);
 
 	//once only scale to background, and translate to centre
-	b_scaleFactor = { 60.0f, 50.0f, 1.0f };
-	backgroundScale = glm::scale(backgroundScale, glm::vec3(b_scaleFactor));
-	backgroundTranslate = glm::translate(backgroundTranslate, glm::vec3(0.0f, 0.0f, -2.0f));
+	///*b_scaleFactor = { 60.0f, 50.0f, 1.0f };*/
+	////backgroundScale = glm::scale(backgroundScale, glm::vec3(b_scaleFactor));
+	////backgroundTranslate = glm::translate(backgroundTranslate, glm::vec3(0.0f, 0.0f, -2.0f));
 
 	//once only scale and translate to model
 	modelScale = glm::scale(modelScale, glm::vec3(0.7f, 0.7f, 0.7f));
 	modelTranslate = glm::translate(modelTranslate, glm::vec3(0.0f, 0.0f, -1.0f));
-
-	errorLabel = 4;
 
 	//*****************************
 	//'game' loop
@@ -256,25 +267,24 @@ int main(int argc, char *argv[]) {
 		// set position, target, up direction
 		viewMatrix = glm::lookAt(glm::vec3(cam.camXPos, cam.camYPos, cam.camZPos), cam.cameraTarget, cam.cameraUp);
 
-		errorLabel = 5;
+		//////background
+		////glUseProgram(background.shaderProgram);
+		//////set background lighting
+		////backgroundColourLocation = glGetUniformLocation(background.shaderProgram, "uLightColour");
+		////glProgramUniform3fv(background.shaderProgram, backgroundColourLocation, 1, glm::value_ptr(lightCol));
+		//////light distance
+		////ambientIntensityLocation = glGetUniformLocation(background.shaderProgram, "uAmbientIntensity");
+		////glProgramUniform1f(background.shaderProgram, ambientIntensityLocation, ambientIntensity);
 
-		//background
-		glUseProgram(background.shaderProgram);
-		//set background lighting
-		backgroundColourLocation = glGetUniformLocation(background.shaderProgram, "uLightColour");
-		glProgramUniform3fv(background.shaderProgram, backgroundColourLocation, 1, glm::value_ptr(lightCol));
-		//light distance
-		ambientIntensityLocation = glGetUniformLocation(background.shaderProgram, "uAmbientIntensity");
-		glProgramUniform1f(background.shaderProgram, ambientIntensityLocation, ambientIntensity);
-
-		//set background image
-		modelLocation = glGetUniformLocation(background.shaderProgram, "uModel");
-		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(backgroundTranslate*backgroundScale));
-		viewLocation = glGetUniformLocation(background.shaderProgram, "uView");
-		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-		projectionLocation = glGetUniformLocation(background.shaderProgram, "uProjection");
-		glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-		glBindTexture(GL_TEXTURE_2D, texArray[0].texture);
+		//////set background image
+		////modelLocation = glGetUniformLocation(background.shaderProgram, "uModel");
+		////glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(backgroundTranslate*backgroundScale));
+		////viewLocation = glGetUniformLocation(background.shaderProgram, "uView");
+		////glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+		////projectionLocation = glGetUniformLocation(background.shaderProgram, "uProjection");
+		////glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+		////glBindTexture(GL_TEXTURE_2D, texArray[0].texture);
+		background.update(cam);
 		background.render();
 
 		////set cube
@@ -376,45 +386,33 @@ void handleInput()
 		{
 			switch (event.key.keysym.sym)
 			{
-			
-			case SDLK_UP:
-				//translate = glm::translate(translate, glm::vec3((float)cos(angle)*0.02f, (float)sin(angle)*0.02f, 0.0f));
-				break;
-			case SDLK_a:
-				//angle += glm::radians(10.0f);
-				//rotate = glm::rotate(rotate,glm::radians(10.0f), glm::vec3(0, 0, 1));
-				break;
-			case SDLK_d:
-				//angle -= glm::radians(10.0f);
-				//rotate = glm::rotate(rotate, glm::radians(-10.0f) , glm::vec3(0, 0, 1));
-				break;
-			case SDLK_p:
+			case SDLK_w:
 				//move camera 'forward' in the -ve z direction
 				cam.camZPos -= cam.camSpeed;
 				break;
-			case SDLK_l:
+			case SDLK_s:
 				//move camera 'backwards' in +ve z direction
 				cam.camZPos += cam.camSpeed;
 				break;
-			case SDLK_z:
+			case SDLK_a:
 				//move camera left
 				//move camera target with position
 				cam.camXPos -= cam.camSpeed;
 				cam.camXTarget -= cam.camSpeed;
 				break;
-			case SDLK_x:
+			case SDLK_d:
 				//move camera right
 				//move camera target with position
 				cam.camXPos += cam.camSpeed;
 				cam.camXTarget += cam.camSpeed;
 				break;
 
-			case SDLK_m:
+			case SDLK_q:
 				//move camera up
 				cam.camYPos += cam.camSpeed;
 				cam.camYTarget += cam.camSpeed;
 				break;
-			case SDLK_k:
+			case SDLK_e:
 				//move camera down
 				cam.camYPos -= cam.camSpeed;
 				cam.camYTarget -= cam.camSpeed;

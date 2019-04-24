@@ -63,9 +63,15 @@
     <ClInclude Include="ModelLoaderClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BC_Square.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Week10_Lighting+Diffuse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BC_Square.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

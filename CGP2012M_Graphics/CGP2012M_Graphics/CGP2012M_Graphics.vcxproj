@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BC_Square.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Circle.h" />
     <ClInclude Include="CircleTexture.h" />
@@ -37,6 +38,7 @@
     <ClInclude Include="Triangle_T.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BC_Square.cpp" />
     <ClCompile Include="Week10_Lighting+Diffuse.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

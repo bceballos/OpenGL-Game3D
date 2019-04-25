@@ -28,7 +28,7 @@ public:
 		//set camera position and what its looking at(the target)
 		camXPos = 0.0f;
 		camYPos = 0.0f;
-		camZPos = 4.0f;
+		camZPos = 11.0f;
 		camXTarget = 0.0f;
 		camYTarget = 0.0f;
 		camZTarget = 0.0f;

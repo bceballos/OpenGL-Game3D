@@ -63,11 +63,23 @@ public:
 	glm::mat4 modelScale;
 	glm::mat4 modelTranslate;
 
+	glm::vec3 direction;
+	glm::vec3 position;
+
 	glm::mat4 normalMatrix;
 
-	void init(int w, int h, std::string modelPath, std::string texturePath);
-	void update(GLuint elapsedTime, Camera cam);
+	float speed;
+	float movAngle;
+
+	int radius = 0.4f;
+
+	bool destroyed = false;
+
+
+	void init(int w, int h, std::string modelPath, std::string texturePath, float offsetX, float offsetY);
+	void update(GLuint elapsedTime, Camera cam, float bX_r, float bX_l, float bY_t, float bY_b);
 	void render();
 	void setBuffers();
+	void borderCollision(float bX_r, float bX_l, float bY_t, float bY_b);
 };
 

@@ -11,7 +11,7 @@ BC_Sphere::~BC_Sphere()
 {
 }
 
-void BC_Sphere::init(int w, int h,std::string modelPath, std::string texturePath)
+void BC_Sphere::init(int w, int h, std::string modelPath, std::string texturePath, float offsetX, float offsetY)
 {
 	//shaders
 	//vSh.shaderFileName("..//..//Assets//Shaders//shader_Projection_basicLight.vert");
@@ -40,8 +40,12 @@ void BC_Sphere::init(int w, int h,std::string modelPath, std::string texturePath
 	modelScale = glm::mat4(1.0f);
 	modelTranslate = glm::mat4(1.0f);
 
-	modelScale = glm::scale(modelScale, glm::vec3(0.7f, 0.7f, 0.7f));
-	modelTranslate = glm::translate(modelTranslate, glm::vec3(0.0f, 0.0f, -1.0f));
+	modelScale = glm::scale(modelScale, glm::vec3(0.4f, 0.4f, 0.4f));
+	modelTranslate = glm::translate(modelTranslate, glm::vec3(offsetX, offsetY, -1.0f));
+
+	movAngle = glm::radians((float)(rand() % 360));
+	speed = 0.02f;
+	direction = glm::vec3((float)cos(movAngle), (float)sin(movAngle), 0.0f);
 
 	viewMatrix = glm::mat4(1.0f);
 	projectionMatrix = glm::perspective(glm::radians(45.0f), (float)w / (float)h, 0.1f, 100.0f);
@@ -50,8 +54,13 @@ void BC_Sphere::init(int w, int h,std::string modelPath, std::string texturePath
 	setBuffers();
 }
 
-void BC_Sphere::update(GLuint elapsedTime, Camera cam)
+void BC_Sphere::update(GLuint elapsedTime, Camera cam, float bX_r, float bX_l, float bY_t, float bY_b)
 {
+	borderCollision(bX_r, bX_l, bY_t, bY_b);
+
+	modelTranslate = glm::translate(modelTranslate, direction * speed);
+	position = glm::vec3(modelTranslate[3][0], modelTranslate[3][1], modelTranslate[3][2]);
+
 	viewMatrix = glm::lookAt(glm::vec3(cam.camXPos, cam.camYPos, cam.camZPos), cam.cameraTarget, cam.cameraUp);
 
 	////set .obj model
@@ -139,4 +148,14 @@ void BC_Sphere::setBuffers()
 
 	//Unbind the VAO
 	glBindVertexArray(0);
+}
+
+void BC_Sphere::borderCollision(float bX_r, float bX_l, float bY_t, float bY_b)
+{
+	if ((position.y > (bY_t - radius) - 1.2f) || (position.y < (bY_b - radius) + 1.2f)) {
+		direction.y *= -1;
+	}
+	if ((position.x > (bX_r - radius) - 1.2f) || (position.x < (bX_l - radius) + 1.2f)) {
+		direction.x *= -1;
+	}
 }

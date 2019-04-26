@@ -210,21 +210,10 @@ void BC_Player::setBuffers()
 
 void BC_Player::checkBulletCollision()
 {
-	if ((bullet[0].position.y > (bY_t - bullet[0].radius) - 0.5f) || (bullet[0].position.y < (bY_b - bullet[0].radius) + 0.9f)) {
-		bullet.erase(bullet.begin());
-		shot = false;
-	}
-	else if ((bullet[0].position.x > (bX_r - bullet[0].radius) - 0.5f) || (bullet[0].position.x < (bX_l - bullet[0].radius) + 0.9f)) {
-		bullet.erase(bullet.begin());
-		shot = false;
-	}
+
 }
 
 void BC_Player::shoot()
 {
-	if (!shot) {
-		bullet.push_back(BC_Bullet());
-		bullet[0].init(w, h, "..//..//Assets//Models//blenderSphere.obj", "..//..//Assets//Textures//deathstar.png", movAngle, position);
-		shot = true;
-	}
+
 }

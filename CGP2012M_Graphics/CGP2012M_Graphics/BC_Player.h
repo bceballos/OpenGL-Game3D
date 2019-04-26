@@ -10,7 +10,6 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "TextureClass.h"
-#include "BC_Bullet.h"
 
 #include "Camera.h"
 //#include "SDL.h"
@@ -92,8 +91,6 @@ public:
 
 	Rotation pRot = Rotation::NONE;
 	Direction pMov = Direction::NONE;
-
-	std::vector<BC_Bullet> bullet;
 
 	bool shot = false;
 

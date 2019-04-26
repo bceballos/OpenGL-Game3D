@@ -77,7 +77,7 @@ public:
 
 	int animationCalls = 0;
 
-	void init(int w, int h, std::string modelPath, std::string texturePath, float offsetX, float offsetY);
+	void init(int w, int h, std::string modelPath, std::string texturePath, float offsetX, float offsetY, int lightingModel);
 	void update(GLuint elapsedTime, Camera cam, float bX_r, float bX_l, float bY_t, float bY_b);
 	void render();
 	void setBuffers();

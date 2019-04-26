@@ -48,6 +48,9 @@ public:
 	int lightColLocation;
 	int lightPositionLocation;
 
+	int lightColLocationTwo;
+	int lightPositionLocationTwo;
+
 	int importModelLocation;
 	int importViewLocation;
 	int importProjectionLocation;
@@ -60,12 +63,16 @@ public:
 	glm::vec3 lightColour;
 	glm::vec3 lightPosition;
 
+	glm::vec3 lightColourTwo;
+	glm::vec3 lightPositionTwo;
+
 	glm::mat4 modelRotate;
 	glm::mat4 modelScale;
 	glm::mat4 modelTranslate;
 
 	glm::vec3 direction;
 	glm::vec3 position;
+
 
 	glm::mat4 normalMatrix;
 
@@ -93,13 +100,12 @@ public:
 	Direction pMov = Direction::NONE;
 
 	bool shot = false;
+	bool prevLightModel = false;
 
-	void init(int w, int h, std::string modelPath, std::string texturePath);
+	void init(int w, int h, std::string modelPath, std::string texturePath, int lightingModel);
 	void update(Camera cam);
 	void render();
 	void input(SDL_Event e);
 	void setBuffers();
-	void shoot();
-	void checkBulletCollision();
 };
 

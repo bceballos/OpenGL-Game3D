@@ -16,8 +16,9 @@ public:
 
 	int amount, initAmount;
 	int w, h;
+	int lightingModel;
 
-	void init(int amount, int w, int h);
+	void init(int amount, int w, int h, int lightingModel);
 	void update(GLuint elapsedTime, Camera cam, float bX_r, float bX_l, float bY_t, float bY_b, BC_Player &player);
 	void repopulate();
 };

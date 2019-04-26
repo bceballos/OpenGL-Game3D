@@ -54,10 +54,10 @@ TO DO LIST
 
 	3D GEOMETRY:
 		  VISIBLE 3D GEOMETRY FOR BUBBLES AND PLAYER 
-		- VISIBLE GEOMETRY FOR WORLD BOUNDARIES
-		- VISIBLE SKYBOX
+		  VISIBLE GEOMETRY FOR WORLD BOUNDARIES
+		- VISIBLE SKYBOX https://learnopengl.com/Advanced-OpenGL/Cubemaps
 		  OBJ MODELS ARE LOADED & TEXTURES ARE LOADED WITHIN MAIN CODE
-		- OBJ FILES ARE LOADED WITH TEXTURE AND NORMAL DATA 
+		  OBJ FILES ARE LOADED WITH TEXTURE AND NORMAL DATA 
 
 	PLAYABLE GAME:
 		  CHARACTER CAN MOVE / ROTATE, BUBBLES MOVE 
@@ -69,9 +69,9 @@ TO DO LIST
 	LIGHTING & TEXTURES:
 		  ALL GEOMETRY IS TEXTURED 
 		  LIGHTING IN SCENE FROM ONE LIGHT SOURCE
-		- LIGHTING IN SCENE FROM MULTIPLE SOURCES 
+		  LIGHTING IN SCENE FROM MULTIPLE SOURCES 
 		  DYNAMIC LIGHTING (SPOTLIGHT)
-		- DIFFERENT LIGHTING MODELS SELECTED
+		  DIFFERENT LIGHTING MODELS SELECTED
 
 	SHADERS:
 		  SHADERS ARE IN THEIR OWN FILES
@@ -87,6 +87,7 @@ SDL_Event event;
 SDL_Window *win;
 bool windowOpen = true;
 bool isFullScreen = false;
+bool lightModel = false;
 float bubbleSpeed = -0.001f;
 float radius;
 //screen boundaries for collision tests
@@ -160,6 +161,10 @@ int main(int argc, char *argv[]) {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
+	srand(time(0));
+	int lighting = rand() % 2;
+	std::cout << "LIGHTING MODEL SELECTED: " << lighting << "\n";
+
 	//objects
 	//create background square
 	BC_Square background;
@@ -171,8 +176,8 @@ int main(int argc, char *argv[]) {
 	//could make this better by specifying the texture in this model header
 
 	
-	bubbles.init(5, w, h);
-	player.init(w, h, "..//..//Assets//Models//blenderCube.obj", "..//..//Assets//Textures//deathstar.png");
+	bubbles.init(5, w, h, lighting);
+	player.init(w, h, "..//..//Assets//Models//blenderCube.obj", "..//..//Assets//Textures//deathstar.png", lighting);
 
 	for (int i = 0; i < player.health; i++) {
 		lives.push_back(life);
@@ -311,7 +316,9 @@ void handleInput()
 				//move camera 'backwards' in +ve z direction
 				cam.camZPos += cam.camSpeed;
 				break;
-
+			case SDLK_l:
+				lightModel = !lightModel;
+				break;
 			// Pass camera movement to the player
 			//case SDLK_a:
 			//	//move camera left

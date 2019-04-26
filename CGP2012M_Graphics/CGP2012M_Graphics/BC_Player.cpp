@@ -11,10 +11,17 @@ BC_Player::~BC_Player()
 {
 }
 
-void BC_Player::init(int w, int h, std::string modelPath, std::string texturePath)
+void BC_Player::init(int w, int h, std::string modelPath, std::string texturePath, int lightingModel)
 {
-	vsh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_AD.vert");
-	fsh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_AD.frag");
+	vsh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_ADPlayer.vert");
+
+	if (lightingModel == 0) {
+		fsh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_ADPlayer.frag");
+	}
+	else {
+		fsh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_ADPlayer_Toon.frag");
+	}
+	
 
 	vsh.getShader(1);
 	fsh.getShader(2);
@@ -33,12 +40,16 @@ void BC_Player::init(int w, int h, std::string modelPath, std::string texturePat
 	lightPosition = glm::vec3(0.0f, 0.0f, 0.5f);
 	lightColour = glm::vec3(1.0f, 1.0f, 0.98f);
 
+	lightPositionTwo = glm::vec3(0.0f, 5.4f, -0.5f);
+	lightColourTwo = glm::vec3(0.0f, 1.0f, 1.0f);
+
 	modelRotate = glm::mat4(1.0f);
 	modelScale = glm::mat4(1.0f);
 	modelTranslate = glm::mat4(1.0f);
 
 	modelScale = glm::scale(modelScale, glm::vec3(0.4f, 0.4f, 0.4f));
 	modelTranslate = glm::translate(modelTranslate, glm::vec3(0.0f, 0.0f, -1.0f));
+
 
 	this->w = w;
 	this->h = h;
@@ -52,6 +63,7 @@ void BC_Player::init(int w, int h, std::string modelPath, std::string texturePat
 
 void BC_Player::update(Camera cam)
 {
+
 	if (pMov == Direction::UP) {
 		modelTranslate = glm::translate(modelTranslate, glm::vec3((float)cos(movAngle)*0.05f, (float)sin(movAngle)*0.05f, 0.0f));
 	}
@@ -70,12 +82,12 @@ void BC_Player::update(Camera cam)
 	if (immortal && triggered) {
 		triggered = false;
 		startTicks = SDL_GetTicks();
-		lightColour = glm::vec3(1.0f, 0.0f, 0.0f);
+		lightColourTwo = glm::vec3(1.0f, 0.0f, 0.0f);
 	}
 
-	if ((SDL_GetTicks() - startTicks >= 3000) && immortal) {
+	if ((SDL_GetTicks() - startTicks >= 30000) && immortal) {
 		immortal = false;
-		lightColour = glm::vec3(1.0f, 1.0f, 0.98f);
+		lightColourTwo = glm::vec3(1.0f, 1.0f, 0.98f);
 	}
 
 	////set .obj model
@@ -86,6 +98,12 @@ void BC_Player::update(Camera cam)
 	glUniform3fv(lightColLocation, 1, glm::value_ptr(lightColour));
 	lightPositionLocation = glGetUniformLocation(shaderProgram, "lightPos");
 	glUniform3fv(lightPositionLocation, 1, glm::value_ptr(lightPosition));
+
+	lightColLocationTwo = glGetUniformLocation(shaderProgram, "sLightCol");
+	glUniform3fv(lightColLocationTwo, 1, glm::value_ptr(lightColourTwo));
+	lightPositionLocationTwo = glGetUniformLocation(shaderProgram, "sLightPos");
+	glUniform3fv(lightPositionLocation, 1, glm::value_ptr(lightPositionTwo));
+
 	//rotation
 	//modelRotate = 1.0f; //ADD PLAYER ROTATION
 	importModelLocation = glGetUniformLocation(shaderProgram, "uModel");
@@ -103,10 +121,12 @@ void BC_Player::update(Camera cam)
 	normalMatrixLocation = glGetUniformLocation(shaderProgram, "uNormalMatrix");
 	glUniformMatrix4fv(normalMatrixLocation, 1, GL_FALSE, glm::value_ptr(normalMatrix));
 	glBindTexture(GL_TEXTURE_2D, texture.texture);
+
 }
 
 void BC_Player::render()
 {
+	//glUseProgram(shaderProgram);
 	//draw the square 
 	glBindVertexArray(VAO);
 	//glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
@@ -129,7 +149,7 @@ void BC_Player::input(SDL_Event e)
 			pRot = Rotation::RIGHT;
 			break;
 		case SDLK_SPACE:
-			shoot();
+			//shoot();
 			break;
 		}
 	}
@@ -197,14 +217,4 @@ void BC_Player::setBuffers()
 
 	//Unbind the VAO
 	glBindVertexArray(0);
-}
-
-void BC_Player::checkBulletCollision()
-{
-
-}
-
-void BC_Player::shoot()
-{
-
 }

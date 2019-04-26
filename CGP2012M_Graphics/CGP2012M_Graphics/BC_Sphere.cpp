@@ -11,13 +11,19 @@ BC_Sphere::~BC_Sphere()
 {
 }
 
-void BC_Sphere::init(int w, int h, std::string modelPath, std::string texturePath, float offsetX, float offsetY)
+void BC_Sphere::init(int w, int h, std::string modelPath, std::string texturePath, float offsetX, float offsetY, int lightingModel)
 {
 	//shaders
 	//vSh.shaderFileName("..//..//Assets//Shaders//shader_Projection_basicLight.vert");
 	//fSh.shaderFileName("..//..//Assets//Shaders//shader_Projection_basicLight.frag");
 	vsh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_AD.vert");
-	fsh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_AD.frag");
+	if (lightingModel == 0) {
+		fsh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_AD.frag");
+	}
+	else {
+		fsh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_AD_Toon.frag");
+	}
+	
 
 	vsh.getShader(1);
 	fsh.getShader(2);

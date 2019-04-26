@@ -11,7 +11,7 @@ BC_SphereManager::~BC_SphereManager()
 {
 }
 
-void BC_SphereManager::init(int amount, int w, int h)
+void BC_SphereManager::init(int amount, int w, int h, int lightingModel)
 {
 	srand(time(0));
 
@@ -19,12 +19,13 @@ void BC_SphereManager::init(int amount, int w, int h)
 	initAmount = amount;
 	this->w = w;
 	this->h = h;
+	this->lightingModel = lightingModel;
 
 	for (int i = 0; i < amount; i++) {
 
 
 		bubbles.push_back(BC_Sphere());
-		bubbles.back().init(w, h, "..//..//Assets//Models//blenderSphere.obj", "..//..//Assets//Textures//earthmap1k.png", (rand() % 5 + 1), (rand() % 4 + 1));
+		bubbles.back().init(w, h, "..//..//Assets//Models//blenderSphere.obj", "..//..//Assets//Textures//earthmap1k.png", (rand() % 5 + 1), (rand() % 4 + 1), lightingModel);
 	}
 }
 
@@ -61,7 +62,7 @@ void BC_SphereManager::repopulate()
 	if (amount < initAmount) {
 		for (int i = 0; i < (initAmount - amount); i++) {
 			bubbles.push_back(BC_Sphere());
-			bubbles.back().init(w, h, "..//..//Assets//Models//blenderSphere.obj", "..//..//Assets//Textures//earthmap1k.png", (rand() % 4), (rand() % 3));
+			bubbles.back().init(w, h, "..//..//Assets//Models//blenderSphere.obj", "..//..//Assets//Textures//earthmap1k.png", (rand() % 4), (rand() % 3), lightingModel);
 			amount++;
 		}
 	}

@@ -50,7 +50,7 @@ void BC_Player::init(int w, int h, std::string modelPath, std::string texturePat
 	setBuffers();
 }
 
-void BC_Player::update(GLuint elapsedTime, Camera cam)
+void BC_Player::update(Camera cam)
 {
 	if (pMov == Direction::UP) {
 		modelTranslate = glm::translate(modelTranslate, glm::vec3((float)cos(movAngle)*0.05f, (float)sin(movAngle)*0.05f, 0.0f));
@@ -76,11 +76,6 @@ void BC_Player::update(GLuint elapsedTime, Camera cam)
 	if ((SDL_GetTicks() - startTicks >= 3000) && immortal) {
 		immortal = false;
 		lightColour = glm::vec3(1.0f, 1.0f, 0.98f);
-	}
-
-	if (shot) {
-		bullet[0].update(elapsedTime, cam, bX_r, bX_l, bY_t, bY_b);
-		checkBulletCollision();
 	}
 
 	////set .obj model
@@ -118,10 +113,6 @@ void BC_Player::render()
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size() * sizeof(vertices));
 	glBindVertexArray(0);
 
-	if (shot) {
-		std::cout << "Player bullet is rendering \n";
-		bullet[0].render();
-	}
 }
 
 void BC_Player::input(SDL_Event e)

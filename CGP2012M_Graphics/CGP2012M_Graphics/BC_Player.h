@@ -95,7 +95,7 @@ public:
 	bool shot = false;
 
 	void init(int w, int h, std::string modelPath, std::string texturePath);
-	void update(GLuint elapsedTime, Camera cam);
+	void update(Camera cam);
 	void render();
 	void input(SDL_Event e);
 	void setBuffers();

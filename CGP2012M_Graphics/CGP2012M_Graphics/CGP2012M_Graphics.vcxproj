@@ -19,8 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BC_Bullet.h" />
     <ClInclude Include="BC_Cube.h" />
+    <ClInclude Include="BC_Framelock.h" />
+    <ClInclude Include="BC_Player.h" />
     <ClInclude Include="BC_Sphere.h" />
+    <ClInclude Include="BC_SphereManager.h" />
     <ClInclude Include="BC_Square.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Circle.h" />
@@ -39,8 +43,12 @@
     <ClInclude Include="Triangle_T.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BC_Bullet.cpp" />
     <ClCompile Include="BC_Cube.cpp" />
+    <ClCompile Include="BC_Framelock.cpp" />
+    <ClCompile Include="BC_Player.cpp" />
     <ClCompile Include="BC_Sphere.cpp" />
+    <ClCompile Include="BC_SphereManager.cpp" />
     <ClCompile Include="BC_Square.cpp" />
     <ClCompile Include="Week10_Lighting+Diffuse.cpp" />
   </ItemGroup>

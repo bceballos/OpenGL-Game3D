@@ -45,30 +45,35 @@
 #include "BC_Square.h"
 #include "BC_Sphere.h"
 #include "BC_Cube.h"
+#include "BC_Framelock.h"
+#include "BC_Player.h"
+#include "BC_SphereManager.h"
+
+#include <vector>
 
 /* 
 
 TO DO LIST
 
 	3D GEOMETRY:
-		- VISIBLE 3D GEOMETRY FOR BUBBLES AND PLAYER !
+		  VISIBLE 3D GEOMETRY FOR BUBBLES AND PLAYER 
 		- VISIBLE GEOMETRY FOR WORLD BOUNDARIES
 		- VISIBLE SKYBOX
 		  OBJ MODELS ARE LOADED & TEXTURES ARE LOADED WITHIN MAIN CODE
 		- OBJ FILES ARE LOADED WITH TEXTURE AND NORMAL DATA 
 
 	PLAYABLE GAME:
-		- CHARACTER CAN MOVE / ROTATE, BUBBLES MOVE !
-		- BUBBLES ARE CONSTRAINED WITHIN WORLD BOUNDARIES !
-		- BUBBLES ARE DESTROYED WHEN FIRED AT !
-		- PLAYER HAS 3 LIVES SHOWN ON A 2D HUD !
-		- OTHER GAMEPLAY FEATURE 
+		  CHARACTER CAN MOVE / ROTATE, BUBBLES MOVE 
+		  BUBBLES ARE CONSTRAINED WITHIN WORLD BOUNDARIES 
+		- BUBBLES ARE DESTROYED WHEN FIRED AT 
+		  PLAYER HAS 3 LIVES SHOWN ON A 2D HUD 
+		  OTHER GAMEPLAY FEATURE 
 
 	LIGHTING & TEXTURES:
-		- ALL GEOMETRY IS TEXTURED 
+		  ALL GEOMETRY IS TEXTURED 
 		  LIGHTING IN SCENE FROM ONE LIGHT SOURCE
 		- LIGHTING IN SCENE FROM MULTIPLE SOURCES 
-		- DYNAMIC LIGHTING (SPOTLIGHT)
+		  DYNAMIC LIGHTING (SPOTLIGHT)
 		- DIFFERENT LIGHTING MODELS SELECTED
 
 	SHADERS:
@@ -88,10 +93,10 @@ bool isFullScreen = false;
 float bubbleSpeed = -0.001f;
 float radius;
 //screen boundaries for collision tests
-float bX_r = 2.0f;
-float bX_l = -2.0f;
-float bY_t = 1.0f;
-float bY_b = -1.0f;
+float bX_r = 6.3f;
+float bX_l = -6.3f;
+float bY_t = 5.4f;
+float bY_b = -5.4f;
 //screen centre
 float centreX = 0.0f;
 float centreY = 0.0f;
@@ -125,9 +130,16 @@ glm::vec3 lightCol;
 glm::vec3 viewPosition;
 float ambientIntensity;
 
+
 //**************
 //function prototypes
 void handleInput();
+
+BC_Player player;
+BC_SphereManager bubbles;
+BC_Square life;
+
+std::vector<BC_Square> lives;
 
 int main(int argc, char *argv[]) {
 	//start and initialise SDL
@@ -155,24 +167,20 @@ int main(int argc, char *argv[]) {
 	//create background square
 	BC_Square background;
 	background.init(60.f, 50.0f, 1.0f, w, h, 0.0f, 0.0f, -2.0f, "..//..//Assets//Textures//space.png");
+
+	BC_Square backdrop;
+	backdrop.init(70.f, 60.f, 1.0f, w, h, 0.0f, 0.0f, -2.0f, "..//..//Assets//Textures//borderBackground.png");
 	//create model
 	//could make this better by specifying the texture in this model header
 
-	BC_Sphere sphere;
-	sphere.init(w, h,"..//..//Assets//Models//blenderCube.obj", "..//..//Assets//Textures//deathstar.png");
+	
+	bubbles.init(5, w, h);
+	player.init(w, h, "..//..//Assets//Models//blenderCube.obj", "..//..//Assets//Textures//deathstar.png");
 
-	BC_Cube cube;
-	cube.init(w, h, "..//..//Assets//Textures//United_Kingdom.png");
-
-	//*****************************************
-	//set uniform variables
-	int transformLocation;
-	int importModelLocation;
-
-	int modelColourLocation;
-	int modelAmbientLocation;
-
-	int viewPositionLocation;
+	for (int i = 0; i < player.health; i++) {
+		lives.push_back(life);
+		lives[i].init(2.0f, 2.0f, 1.0f, w, h, -0.4f + (i * 0.4f), -5.5f, -2.0f, "..//..//Assets//Textures//livesHeart.png");
+	}
 
 	GLuint currentTime = 0;
 	GLuint lastTime = 0;
@@ -204,6 +212,10 @@ int main(int argc, char *argv[]) {
 	//'game' loop
 	while (windowOpen)
 	{
+		BC_Fpslock t = BC_Fpslock();
+		if (player.health == 0) {
+			windowOpen = false;
+		}
 		//*************************
 		//****************************
 		// OpenGL calls.
@@ -225,14 +237,25 @@ int main(int argc, char *argv[]) {
 		//camera only moves side to side, formards and backwards (no rotation)
 		// set position, target, up direction
 
+		backdrop.update(cam);
+		backdrop.render();
+
 		background.update(cam);
 		background.render();
 
-		sphere.update(elapsedTime, cam);
-		sphere.render();
+		for (int i = 0; i < player.health; i++) {
+			lives[i].update(cam);
+			lives[i].render();
+		}
 
-		//cube.update(elapsedTime, cam);
-		//cube.render();
+		//sphere.update(elapsedTime, cam, bX_r, bX_l, bY_t, bY_b);
+		//sphere.render();
+
+		bubbles.update(elapsedTime, cam, bX_r, bX_l, bY_t, bY_b, player);
+		/*bubbles.render();*/
+
+		player.update(elapsedTime, cam);
+		player.render();
 
 		//set to wireframe so we can see the circles
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -283,46 +306,50 @@ void handleInput()
 		{
 			switch (event.key.keysym.sym)
 			{
-			case SDLK_w:
+			case SDLK_q:
 				//move camera 'forward' in the -ve z direction
 				cam.camZPos -= cam.camSpeed;
 				break;
-			case SDLK_s:
+			case SDLK_e:
 				//move camera 'backwards' in +ve z direction
 				cam.camZPos += cam.camSpeed;
 				break;
-			case SDLK_a:
-				//move camera left
-				//move camera target with position
-				cam.camXPos -= cam.camSpeed;
-				cam.camXTarget -= cam.camSpeed;
-				break;
-			case SDLK_d:
-				//move camera right
-				//move camera target with position
-				cam.camXPos += cam.camSpeed;
-				cam.camXTarget += cam.camSpeed;
-				break;
 
-			case SDLK_q:
-				//move camera up
-				cam.camYPos += cam.camSpeed;
-				cam.camYTarget += cam.camSpeed;
-				break;
-			case SDLK_e:
-				//move camera down
-				cam.camYPos -= cam.camSpeed;
-				cam.camYTarget -= cam.camSpeed;
-				break;
-			case SDLK_v:
-				//lightPosition.x -= 0.1f; //FIX LIGHTPOSITION IN INPUT LATER
-				break;
-			case SDLK_b:
-				//lightPosition.x += 0.1f;
-				break;
+			// Pass camera movement to the player
+			//case SDLK_a:
+			//	//move camera left
+			//	//move camera target with position
+			//	cam.camXPos -= cam.camSpeed;
+			//	cam.camXTarget -= cam.camSpeed;
+			//	break;
+			//case SDLK_d:
+			//	//move camera right
+			//	//move camera target with position
+			//	cam.camXPos += cam.camSpeed;
+			//	cam.camXTarget += cam.camSpeed;
+			//	break;
+
+			//case SDLK_q:
+			//	//move camera up
+			//	cam.camYPos += cam.camSpeed;
+			//	cam.camYTarget += cam.camSpeed;
+			//	break;
+			//case SDLK_e:
+			//	//move camera down
+			//	cam.camYPos -= cam.camSpeed;
+			//	cam.camYTarget -= cam.camSpeed;
+			//	break;
+			//case SDLK_v:
+			//	//lightPosition.x -= 0.1f; //FIX LIGHTPOSITION IN INPUT LATER
+			//	break;
+			//case SDLK_b:
+			//	//lightPosition.x += 0.1f;
+			//	break;
 			
 			}
 		}
+		
+		player.input(event);
 	}
 }
 #endif

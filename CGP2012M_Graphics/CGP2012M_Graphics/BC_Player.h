@@ -10,9 +10,10 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "TextureClass.h"
+#include "BC_Bullet.h"
 
 #include "Camera.h"
-
+//#include "SDL.h"
 #include <cstring>
 
 class BC_Player
@@ -70,16 +71,38 @@ public:
 	glm::mat4 normalMatrix;
 
 	float speed;
-	float movAngle;
+	float movAngle = 1.5708f;
+	bool immortal = false;
+	bool triggered = false;
 
 	int radius = 0.4f;
+	int health = 3;
 
-	bool destroyed = false;
+	float bX_r = 6.3f;
+	float bX_l = -6.3f;
+	float bY_t = 5.4f;
+	float bY_b = -5.4f;
 
+	int w, h;
+
+	int startTicks;
+
+	enum class Direction { UP, NONE };
+	enum class Rotation { LEFT, RIGHT, NONE };
+
+	Rotation pRot = Rotation::NONE;
+	Direction pMov = Direction::NONE;
+
+	std::vector<BC_Bullet> bullet;
+
+	bool shot = false;
 
 	void init(int w, int h, std::string modelPath, std::string texturePath);
-	void update(Camera cam);
+	void update(GLuint elapsedTime, Camera cam);
 	void render();
+	void input(SDL_Event e);
 	void setBuffers();
+	void shoot();
+	void checkBulletCollision();
 };
 

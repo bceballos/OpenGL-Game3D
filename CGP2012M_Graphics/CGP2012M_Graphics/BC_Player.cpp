@@ -30,7 +30,7 @@ void BC_Player::init(int w, int h, std::string modelPath, std::string texturePat
 	modelLoader.LoadOBJ2(modelPath.c_str(), this->vertices, this->texCoords, this->normals, this->indices);
 	texture.load(texturePath.c_str());
 
-	lightPosition = glm::vec3(1.0f, 0.0f, 0.5f);
+	lightPosition = glm::vec3(0.0f, 0.0f, 0.5f);
 	lightColour = glm::vec3(1.0f, 1.0f, 0.98f);
 
 	modelRotate = glm::mat4(1.0f);
@@ -40,7 +40,8 @@ void BC_Player::init(int w, int h, std::string modelPath, std::string texturePat
 	modelScale = glm::scale(modelScale, glm::vec3(0.4f, 0.4f, 0.4f));
 	modelTranslate = glm::translate(modelTranslate, glm::vec3(0.0f, 0.0f, -1.0f));
 
-	//direction = glm::vec3((float)cos(movAngle), (float)sin(movAngle), 0.0f);
+	this->w = w;
+	this->h = h;
 
 	viewMatrix = glm::mat4(1.0f);
 	projectionMatrix = glm::perspective(glm::radians(45.0f), (float)w / (float)h, 0.1f, 100.0f);
@@ -49,13 +50,38 @@ void BC_Player::init(int w, int h, std::string modelPath, std::string texturePat
 	setBuffers();
 }
 
-void BC_Player::update(Camera cam)
+void BC_Player::update(GLuint elapsedTime, Camera cam)
 {
-
-	//modelTranslate = glm::translate(modelTranslate, direction * speed); CHANGE THIS TO WORK WITH PLAYER INPUT
+	if (pMov == Direction::UP) {
+		modelTranslate = glm::translate(modelTranslate, glm::vec3((float)cos(movAngle)*0.05f, (float)sin(movAngle)*0.05f, 0.0f));
+	}
+	if (pRot == Rotation::LEFT) {
+		movAngle += glm::radians(2.0f);
+		modelRotate = glm::rotate(modelRotate, glm::radians(2.0f), glm::vec3(0, 0, 1));
+	}
+	else if (pRot == Rotation::RIGHT) {
+		movAngle -= glm::radians(2.0f);
+		modelRotate = glm::rotate(modelRotate, glm::radians(-2.0f), glm::vec3(0, 0, 1));
+	}
 	position = glm::vec3(modelTranslate[3][0], modelTranslate[3][1], modelTranslate[3][2]);
 
 	viewMatrix = glm::lookAt(glm::vec3(cam.camXPos, cam.camYPos, cam.camZPos), cam.cameraTarget, cam.cameraUp);
+
+	if (immortal && triggered) {
+		triggered = false;
+		startTicks = SDL_GetTicks();
+		lightColour = glm::vec3(1.0f, 0.0f, 0.0f);
+	}
+
+	if ((SDL_GetTicks() - startTicks >= 3000) && immortal) {
+		immortal = false;
+		lightColour = glm::vec3(1.0f, 1.0f, 0.98f);
+	}
+
+	if (shot) {
+		bullet[0].update(elapsedTime, cam, bX_r, bX_l, bY_t, bY_b);
+		checkBulletCollision();
+	}
 
 	////set .obj model
 	glUseProgram(shaderProgram);
@@ -66,7 +92,7 @@ void BC_Player::update(Camera cam)
 	lightPositionLocation = glGetUniformLocation(shaderProgram, "lightPos");
 	glUniform3fv(lightPositionLocation, 1, glm::value_ptr(lightPosition));
 	//rotation
-	modelRotate = 1.0f; //ADD PLAYER ROTATION
+	//modelRotate = 1.0f; //ADD PLAYER ROTATION
 	importModelLocation = glGetUniformLocation(shaderProgram, "uModel");
 	glUniformMatrix4fv(importModelLocation, 1, GL_FALSE, glm::value_ptr(modelTranslate*modelRotate*modelScale));
 	importViewLocation = glGetUniformLocation(shaderProgram, "uView");
@@ -91,6 +117,44 @@ void BC_Player::render()
 	//glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size() * sizeof(vertices));
 	glBindVertexArray(0);
+
+	if (shot) {
+		std::cout << "Player bullet is rendering \n";
+		bullet[0].render();
+	}
+}
+
+void BC_Player::input(SDL_Event e)
+{
+	if (e.type == SDL_KEYDOWN) {
+		switch (e.key.keysym.sym) {
+		case SDLK_w:
+			pMov = Direction::UP;
+			break;
+		case SDLK_a:
+			pRot = Rotation::LEFT;
+			break;
+		case SDLK_d:
+			pRot = Rotation::RIGHT;
+			break;
+		case SDLK_SPACE:
+			shoot();
+			break;
+		}
+	}
+	else if (e.type == SDL_KEYUP) {
+		switch (e.key.keysym.sym) {
+		case SDLK_w:
+			pMov = Direction::NONE;
+			break;
+		case SDLK_a:
+			pRot = Rotation::NONE;
+			break;
+		case SDLK_d:
+			pRot = Rotation::NONE;
+			break;
+		}
+	}
 }
 
 void BC_Player::setBuffers()
@@ -142,4 +206,25 @@ void BC_Player::setBuffers()
 
 	//Unbind the VAO
 	glBindVertexArray(0);
+}
+
+void BC_Player::checkBulletCollision()
+{
+	if ((bullet[0].position.y > (bY_t - bullet[0].radius) - 0.5f) || (bullet[0].position.y < (bY_b - bullet[0].radius) + 0.9f)) {
+		bullet.erase(bullet.begin());
+		shot = false;
+	}
+	else if ((bullet[0].position.x > (bX_r - bullet[0].radius) - 0.5f) || (bullet[0].position.x < (bX_l - bullet[0].radius) + 0.9f)) {
+		bullet.erase(bullet.begin());
+		shot = false;
+	}
+}
+
+void BC_Player::shoot()
+{
+	if (!shot) {
+		bullet.push_back(BC_Bullet());
+		bullet[0].init(w, h, "..//..//Assets//Models//blenderSphere.obj", "..//..//Assets//Textures//deathstar.png", movAngle, position);
+		shot = true;
+	}
 }

@@ -33,7 +33,7 @@ void BC_Sphere::init(int w, int h, std::string modelPath, std::string texturePat
 	modelLoader.LoadOBJ2(modelPath.c_str(), this->vertices, this->texCoords, this->normals, this->indices);
 	texture.load(texturePath.c_str());
 
-	lightPosition = glm::vec3(1.0f, 0.0f, 0.5f);
+	lightPosition = glm::vec3(0.0f, 0.0f, 0.5f);
 	lightColour = glm::vec3(1.0f, 1.0f, 0.98f);
 
 	modelRotate = glm::mat4(1.0f);
@@ -61,10 +61,7 @@ void BC_Sphere::update(GLuint elapsedTime, Camera cam, float bX_r, float bX_l, f
 		modelTranslate = glm::translate(modelTranslate, direction * speed);
 		position = glm::vec3(modelTranslate[3][0], modelTranslate[3][1], modelTranslate[3][2]);
 	}
-	else {
-		animate();
-	}
-	
+
 	viewMatrix = glm::lookAt(glm::vec3(cam.camXPos, cam.camYPos, cam.camZPos), cam.cameraTarget, cam.cameraUp);
 
 	////set .obj model
@@ -161,16 +158,5 @@ void BC_Sphere::borderCollision(float bX_r, float bX_l, float bY_t, float bY_b)
 	}
 	if ((position.x > (bX_r - radius) - 1.2f) || (position.x < (bX_l - radius) + 1.2f)) {
 		direction.x *= -1;
-	}
-}
-
-void BC_Sphere::animate()
-{
-	if (animationCalls == 0) {
-		destroyed = true;
-		//CHANGE TEXTURE TO BALL OF FIRE
-	}
-	if (animationCalls <= 15) {
-		animationCalls++;
 	}
 }

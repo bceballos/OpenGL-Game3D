@@ -82,6 +82,5 @@ public:
 	void render();
 	void setBuffers();
 	void borderCollision(float bX_r, float bX_l, float bY_t, float bY_b);
-	void animate();
 };
 

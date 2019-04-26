@@ -6,9 +6,6 @@
 //include shape, shader header files
 #include "GLerror.h"
 #include "SDL_Start.h"
-#include "Triangle_T.h"
-#include "Circle.h"
-#include "CircleTexture.h"
 #include "Camera.h"
 #include "Cube.h"
 #include "Model.h"
@@ -254,7 +251,7 @@ int main(int argc, char *argv[]) {
 		bubbles.update(elapsedTime, cam, bX_r, bX_l, bY_t, bY_b, player);
 		/*bubbles.render();*/
 
-		player.update(elapsedTime, cam);
+		player.update(cam);
 		player.render();
 
 		//set to wireframe so we can see the circles

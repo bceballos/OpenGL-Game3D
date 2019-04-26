@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BC_Bullet.h" />
     <ClInclude Include="BC_Cube.h" />
     <ClInclude Include="BC_Framelock.h" />
     <ClInclude Include="BC_Player.h" />
@@ -27,8 +26,6 @@
     <ClInclude Include="BC_SphereManager.h" />
     <ClInclude Include="BC_Square.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="Circle.h" />
-    <ClInclude Include="CircleTexture.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="GLerror.h" />
     <ClInclude Include="Model.h" />
@@ -37,13 +34,8 @@
     <ClInclude Include="SDL_ttf.h" />
     <ClInclude Include="ShaderClass.h" />
     <ClInclude Include="TextureClass.h" />
-    <ClInclude Include="Textures.h" />
-    <ClInclude Include="Triangle.h" />
-    <ClInclude Include="Triangle_AnyT.h" />
-    <ClInclude Include="Triangle_T.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BC_Bullet.cpp" />
     <ClCompile Include="BC_Cube.cpp" />
     <ClCompile Include="BC_Framelock.cpp" />
     <ClCompile Include="BC_Player.cpp" />

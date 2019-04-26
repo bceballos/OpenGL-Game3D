@@ -1,6 +1,11 @@
 #pragma once
 #include "BC_Sphere.h"
+#include "BC_Player.h"
 #include <vector>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <cmath>
 class BC_SphereManager
 {
 public:
@@ -9,10 +14,11 @@ public:
 
 	std::vector<BC_Sphere> bubbles;
 
-	int amount;
+	int amount, initAmount;
 	int w, h;
 
 	void init(int amount, int w, int h);
-	void update(GLuint elapsedTime, Camera cam, float bX_r, float bX_l, float bY_t, float bY_b);
+	void update(GLuint elapsedTime, Camera cam, float bX_r, float bX_l, float bY_t, float bY_b, BC_Player &player);
+	void repopulate();
 };
 

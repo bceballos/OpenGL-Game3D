@@ -227,6 +227,9 @@ int main(int argc, char *argv[]) {
 		
 		//process inputs
 		handleInput();
+
+		cam.camXTarget = player.position.x;
+		cam.camYTarget = player.position.y;
 		cam.updateCamera();
 
 		//time
@@ -317,6 +320,13 @@ void handleInput()
 				break;
 			case SDLK_l:
 				lightModel = !lightModel;
+				break;
+			case SDLK_LEFT:
+				cam.camZTarget += cam.camSpeed;
+				break;
+
+			case SDLK_RIGHT:
+				cam.camZTarget -= cam.camSpeed;
 				break;
 			// Pass camera movement to the player
 			//case SDLK_a:

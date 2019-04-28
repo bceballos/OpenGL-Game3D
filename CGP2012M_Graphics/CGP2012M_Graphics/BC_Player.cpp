@@ -55,7 +55,7 @@ void BC_Player::init(int w, int h, std::string modelPath, std::string texturePat
 	this->h = h;
 
 	viewMatrix = glm::mat4(1.0f);
-	projectionMatrix = glm::perspective(glm::radians(45.0f), (float)w / (float)h, 0.1f, 100.0f);
+	projectionMatrix = glm::perspective(glm::radians(90.0f), (float)w / (float)h, 0.1f, 100.0f);
 
 	texture.setBuffers();
 	setBuffers();

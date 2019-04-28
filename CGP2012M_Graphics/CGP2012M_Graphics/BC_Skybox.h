@@ -31,7 +31,7 @@ public:
 	glm::mat4 viewMatrix;
 	glm::mat4 projectionMatrix;
 
-	GLuint vertices[108] = {
+	GLfloat vertices[108] = {
 		// positions          
 		-1.0f,  1.0f, -1.0f,
 		-1.0f, -1.0f, -1.0f,

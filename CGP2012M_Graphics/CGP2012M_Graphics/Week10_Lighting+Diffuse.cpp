@@ -45,6 +45,7 @@
 #include "BC_Framelock.h"
 #include "BC_Player.h"
 #include "BC_SphereManager.h"
+#include "BC_Skybox.h"
 
 #include <vector>
 
@@ -76,7 +77,7 @@ TO DO LIST
 	SHADERS:
 		  SHADERS ARE IN THEIR OWN FILES
 		  VARIABLE DATA IS PASSED
-		- RANDOM COLORING OF BUBBLES
+		  RANDOM COLORING OF BUBBLES
 		  GEOMETRY AND TEXTURES IS MANIPULATED
 */
 
@@ -135,6 +136,7 @@ void handleInput();
 BC_Player player;
 BC_SphereManager bubbles;
 BC_Square life;
+BC_Skybox skybox;
 
 std::vector<BC_Square> lives;
 
@@ -174,7 +176,7 @@ int main(int argc, char *argv[]) {
 	//create model
 	//could make this better by specifying the texture in this model header
 
-	
+	skybox.init(w, h);
 	bubbles.init(5, w, h, lighting);
 	player.init(w, h, "..//..//Assets//Models//blenderCube.obj", "..//..//Assets//Textures//deathstar.png", lighting);
 
@@ -230,6 +232,7 @@ int main(int argc, char *argv[]) {
 
 		cam.camXTarget = player.position.x;
 		cam.camYTarget = player.position.y;
+		cam.camZTarget = player.position.z;
 		cam.updateCamera();
 
 		//time
@@ -246,6 +249,9 @@ int main(int argc, char *argv[]) {
 
 		background.update(cam);
 		background.render();
+
+		skybox.update(cam);
+		skybox.render();
 
 		for (int i = 0; i < player.health; i++) {
 			lives[i].update(cam);
@@ -321,44 +327,6 @@ void handleInput()
 			case SDLK_l:
 				lightModel = !lightModel;
 				break;
-			case SDLK_LEFT:
-				cam.camZTarget += cam.camSpeed;
-				break;
-
-			case SDLK_RIGHT:
-				cam.camZTarget -= cam.camSpeed;
-				break;
-			// Pass camera movement to the player
-			//case SDLK_a:
-			//	//move camera left
-			//	//move camera target with position
-			//	cam.camXPos -= cam.camSpeed;
-			//	cam.camXTarget -= cam.camSpeed;
-			//	break;
-			//case SDLK_d:
-			//	//move camera right
-			//	//move camera target with position
-			//	cam.camXPos += cam.camSpeed;
-			//	cam.camXTarget += cam.camSpeed;
-			//	break;
-
-			//case SDLK_q:
-			//	//move camera up
-			//	cam.camYPos += cam.camSpeed;
-			//	cam.camYTarget += cam.camSpeed;
-			//	break;
-			//case SDLK_e:
-			//	//move camera down
-			//	cam.camYPos -= cam.camSpeed;
-			//	cam.camYTarget -= cam.camSpeed;
-			//	break;
-			//case SDLK_v:
-			//	//lightPosition.x -= 0.1f; //FIX LIGHTPOSITION IN INPUT LATER
-			//	break;
-			//case SDLK_b:
-			//	//lightPosition.x += 0.1f;
-			//	break;
-			
 			}
 		}
 		

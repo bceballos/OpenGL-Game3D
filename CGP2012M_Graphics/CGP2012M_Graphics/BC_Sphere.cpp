@@ -54,7 +54,7 @@ void BC_Sphere::init(int w, int h, std::string modelPath, std::string texturePat
 	direction = glm::vec3((float)cos(movAngle), (float)sin(movAngle), 0.0f);
 
 	viewMatrix = glm::mat4(1.0f);
-	projectionMatrix = glm::perspective(glm::radians(45.0f), (float)w / (float)h, 0.1f, 100.0f);
+	projectionMatrix = glm::perspective(glm::radians(90.0f), (float)w / (float)h, 0.1f, 100.0f);
 
 	texture.setBuffers();
 	setBuffers();

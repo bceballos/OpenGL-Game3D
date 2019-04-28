@@ -14,12 +14,12 @@ BC_Skybox::~BC_Skybox()
 void BC_Skybox::init(int w, int h)
 {
 	cubeFaces = {
-		"..//..//Assets//Textures//skybox//5dim_ft.png",
-		"..//..//Assets//Textures//skybox//5dim_bk.png",
-		"..//..//Assets//Textures//skybox//5dim_up.png",
-		"..//..//Assets//Textures//skybox//5dim_dn.png",
-		"..//..//Assets//Textures//skybox//5dim_rt.png",
-		"..//..//Assets//Textures//skybox//5dim_lf.png"
+		"..//..//Assets//Textures//skybox//ashcanyon_ft.png",
+		"..//..//Assets//Textures//skybox//ashcanyon_bk.png",
+		"..//..//Assets//Textures//skybox//ashcanyon_up.png",
+		"..//..//Assets//Textures//skybox//ashcanyon_dn.png",
+		"..//..//Assets//Textures//skybox//ashcanyon_rt.png",
+		"..//..//Assets//Textures//skybox//ashcanyon_lf.png"
 	};
 
 	glGenTextures(1, &texture);
@@ -53,7 +53,7 @@ void BC_Skybox::init(int w, int h)
 	glDeleteShader(fsh.shaderID);
 
 	viewMatrix = glm::mat4(1.0f);
-	projectionMatrix = glm::perspective(glm::radians(45.0f), (float)w / (float)h, 0.1f, 100.0f);
+	projectionMatrix = glm::perspective(glm::radians(90.0f), (float)w / (float)h, 0.1f, 100.0f);
 
 	setBuffers();
 }
@@ -64,7 +64,8 @@ void BC_Skybox::update(Camera cam)
 
 	glUseProgram(shaderProgram);
 
-	
+	auto importViewMatrix = glGetUniformLocation(shaderProgram, "uView");
+	glUniformMatrix4fv(importViewMatrix, 1, GL_FALSE, glm::value_ptr(glm::mat4( glm::mat3(viewMatrix))));
 
 	auto importProjectionLocation = glGetUniformLocation(shaderProgram, "uProjection");
 	glUniformMatrix4fv(importProjectionLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
@@ -83,16 +84,14 @@ void BC_Skybox::render()
 
 void BC_Skybox::setBuffers()
 {
-	//
-	//OpenGL buffers
 	glGenBuffers(1, &VBO);
 	glGenVertexArrays(1, &VAO);
 
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, modelData.size() * sizeof(modelData[0]), &modelData[0], GL_STATIC_DRAW);
-	// Then set our vertex attributes pointers
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
 

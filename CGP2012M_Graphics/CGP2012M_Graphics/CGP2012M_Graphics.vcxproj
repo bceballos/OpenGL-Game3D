@@ -22,6 +22,7 @@
     <ClInclude Include="BC_Cube.h" />
     <ClInclude Include="BC_Framelock.h" />
     <ClInclude Include="BC_Player.h" />
+    <ClInclude Include="BC_Skybox.h" />
     <ClInclude Include="BC_Sphere.h" />
     <ClInclude Include="BC_SphereManager.h" />
     <ClInclude Include="BC_Square.h" />
@@ -39,6 +40,7 @@
     <ClCompile Include="BC_Cube.cpp" />
     <ClCompile Include="BC_Framelock.cpp" />
     <ClCompile Include="BC_Player.cpp" />
+    <ClCompile Include="BC_Skybox.cpp" />
     <ClCompile Include="BC_Sphere.cpp" />
     <ClCompile Include="BC_SphereManager.cpp" />
     <ClCompile Include="BC_Square.cpp" />

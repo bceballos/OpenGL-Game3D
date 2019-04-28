@@ -86,6 +86,8 @@ void BC_Sphere::update(GLuint elapsedTime, Camera cam, float bX_r, float bX_l, f
 	glUniformMatrix4fv(importViewLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 	importProjectionLocation = glGetUniformLocation(shaderProgram, "uProjection");
 	glUniformMatrix4fv(importProjectionLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+	auto importTime = glGetUniformLocation(shaderProgram, "uTime");
+	glUniform1f(importTime, (time(0) % 3600));
 	//set the normal matrix to send to the vertex shader
 	//Light calculations take place in model-view space
 	//So we calculate the normal matrix in that space

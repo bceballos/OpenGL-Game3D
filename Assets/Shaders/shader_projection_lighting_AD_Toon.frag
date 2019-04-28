@@ -46,9 +46,9 @@ else 							 {toon = vec3(0.2, 0.2, 0.2);}
 	vec3 objectDiffuseReflectionCoeff = vec3(1.0f, 1.0f, 1.0f);
     vec3 diffuse = (diffuseStrength * objectDiffuseReflectionCoeff) * (lightColour * toon);
 
-	float random1 = random(uTime, uTime);
-	float random2 = random(uTime + 420, uTime - 69);
-	float random3 = random(uTime - 64, uTime + 128);
+  float random1 = random(vec2(uTime, uTime));
+	float random2 = random(vec2(uTime + 420, uTime - 69));
+	float random3 = random(vec2(uTime - 64, uTime + 128));
 
 	vec4 textureColour = texture(aTex, textureCoordinate);
 

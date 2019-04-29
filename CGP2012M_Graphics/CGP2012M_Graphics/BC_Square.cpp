@@ -42,7 +42,7 @@ void BC_Square::init(float xScale, float yScale, float zScale, int w, int h, flo
 	backgroundTranslate = glm::mat4(1.0f);
 
 	backgroundScale = glm::scale(backgroundScale, glm::vec3(xScale, yScale, zScale));
-	backgroundTranslate = glm::translate(backgroundTranslate, glm::vec3(0.0f, 0.0f, -2.0f));
+	backgroundTranslate = glm::translate(backgroundTranslate, glm::vec3(xPos, -1.5f, -2.0f));
 
 	setBuffers();
 }

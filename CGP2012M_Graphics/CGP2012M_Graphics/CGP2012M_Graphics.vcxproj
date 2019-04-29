@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BC_Boundary.h" />
     <ClInclude Include="BC_Cube.h" />
     <ClInclude Include="BC_Framelock.h" />
     <ClInclude Include="BC_Player.h" />
@@ -37,6 +38,7 @@
     <ClInclude Include="TextureClass.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BC_Boundary.cpp" />
     <ClCompile Include="BC_Cube.cpp" />
     <ClCompile Include="BC_Framelock.cpp" />
     <ClCompile Include="BC_Player.cpp" />

@@ -46,6 +46,7 @@
 #include "BC_Player.h"
 #include "BC_SphereManager.h"
 #include "BC_Skybox.h"
+#include "BC_Boundary.h"
 
 #include <vector>
 
@@ -64,7 +65,7 @@ TO DO LIST
 		  CHARACTER CAN MOVE / ROTATE, BUBBLES MOVE 
 		  BUBBLES ARE CONSTRAINED WITHIN WORLD BOUNDARIES 
 		- BUBBLES ARE DESTROYED WHEN FIRED AT 
-		- PLAYER HAS 3 LIVES SHOWN ON A 2D HUD 
+		  PLAYER HAS 3 LIVES SHOWN ON A 2D HUD 
 		  OTHER GAMEPLAY FEATURE 
 
 	LIGHTING & TEXTURES:
@@ -137,7 +138,7 @@ void handleInput();
 
 BC_Player player;
 BC_SphereManager bubbles;
-//BC_Sphere borders;
+BC_Boundary borders;
 BC_Square life;
 BC_Skybox skybox;
 
@@ -172,11 +173,11 @@ int main(int argc, char *argv[]) {
 	skybox.init(w, h);
 	bubbles.init(5, w, h, lighting);
 	player.init(w, h, "..//..//Assets//Models//blenderCube.obj", "..//..//Assets//Textures//deathstar.png", lighting);
-	//borders.init(w, h, "..//..//Assets//Models//worldborders.obj", "..//..//Assets//Textures//deathstar.png", 0.0f, 0.0f, lighting);
+	borders.init(w, h, "..//..//Assets//Models//Boundry.obj", "..//..//Assets//Textures//deathstar.png", 0.0f, 0.0f, lighting);
 
 	for (int i = 0; i < player.health; i++) {
 		lives.push_back(life);
-		lives[i].init(1.0f, 1.0f, 1.0f, w, h, -0.4f + (i * 0.4f), -5.5f, -2.0f, "..//..//Assets//Textures//livesHeart.png");
+		lives[i].init(1.0f, 1.0f, 1.0f, w, h, -0.2f + (i * 0.2f), -5.5f, -2.0f, "..//..//Assets//Textures//livesHeart.png");
 	}
 
 	GLuint currentTime = 0;
@@ -240,6 +241,9 @@ int main(int argc, char *argv[]) {
 
 		skybox.update(cam);
 		skybox.render();
+
+		borders.update(cam);
+		borders.render();
 
 		for (int i = 0; i < player.health; i++) {
 			lives[i].update(cam);

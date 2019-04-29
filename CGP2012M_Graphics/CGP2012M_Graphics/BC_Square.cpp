@@ -31,9 +31,10 @@ void BC_Square::init(float xScale, float yScale, float zScale, int w, int h, flo
 	texture.load(texturePath.c_str());
 
 	ambientIntensity = 1.0f;
-	lightCol = glm::vec3(1.0f, 1.0f, 0.98f);
+	lightCol = glm::vec3(1.0f, 1.0f, 1.0f);
 
-	projectionMatrix = glm::perspective(glm::radians(45.0f), (float)w / (float)h, 0.1f, 100.0f);
+	//projectionMatrix = glm::ortho(0.0f,(float)w, (float)h, 0.0f, 0.1f, 100.0f);
+	projectionMatrix = glm::perspective(glm::radians(90.0f), (float)w / (float)h, 0.1f, 100.0f);
 
 	viewMatrix = glm::mat4(1.0f);
 
@@ -41,7 +42,7 @@ void BC_Square::init(float xScale, float yScale, float zScale, int w, int h, flo
 	backgroundTranslate = glm::mat4(1.0f);
 
 	backgroundScale = glm::scale(backgroundScale, glm::vec3(xScale, yScale, zScale));
-	backgroundTranslate = glm::translate(backgroundTranslate, glm::vec3(xPos, yPos, zPos));
+	backgroundTranslate = glm::translate(backgroundTranslate, glm::vec3(0.0f, 0.0f, -2.0f));
 
 	setBuffers();
 }
@@ -63,7 +64,8 @@ void BC_Square::update(Camera cam)
 	modelLocation = glGetUniformLocation(shaderProgram, "uModel");
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(backgroundTranslate*backgroundScale));
 	viewLocation = glGetUniformLocation(shaderProgram, "uView");
-	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+
+	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
 	projectionLocation = glGetUniformLocation(shaderProgram, "uProjection");
 	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glBindTexture(GL_TEXTURE_2D, texture.texture);

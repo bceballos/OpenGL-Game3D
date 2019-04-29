@@ -56,7 +56,7 @@ TO DO LIST
 	3D GEOMETRY:
 		  VISIBLE 3D GEOMETRY FOR BUBBLES AND PLAYER 
 		  VISIBLE GEOMETRY FOR WORLD BOUNDARIES
-		- VISIBLE SKYBOX https://learnopengl.com/Advanced-OpenGL/Cubemaps
+		  VISIBLE SKYBOX https://learnopengl.com/Advanced-OpenGL/Cubemaps
 		  OBJ MODELS ARE LOADED & TEXTURES ARE LOADED WITHIN MAIN CODE
 		  OBJ FILES ARE LOADED WITH TEXTURE AND NORMAL DATA 
 
@@ -64,7 +64,7 @@ TO DO LIST
 		  CHARACTER CAN MOVE / ROTATE, BUBBLES MOVE 
 		  BUBBLES ARE CONSTRAINED WITHIN WORLD BOUNDARIES 
 		- BUBBLES ARE DESTROYED WHEN FIRED AT 
-		  PLAYER HAS 3 LIVES SHOWN ON A 2D HUD 
+		- PLAYER HAS 3 LIVES SHOWN ON A 2D HUD 
 		  OTHER GAMEPLAY FEATURE 
 
 	LIGHTING & TEXTURES:
@@ -123,6 +123,8 @@ glm::vec3 camPos;
 glm::vec3 camTarget;
 
 bool flag = true;
+bool isFullscreen = false;
+Uint32 setFullscreen = SDL_WINDOW_FULLSCREEN;
 
 glm::vec3 lightCol;
 glm::vec3 viewPosition;
@@ -135,6 +137,7 @@ void handleInput();
 
 BC_Player player;
 BC_SphereManager bubbles;
+//BC_Sphere borders;
 BC_Square life;
 BC_Skybox skybox;
 
@@ -166,23 +169,14 @@ int main(int argc, char *argv[]) {
 	int lighting = rand() % 2;
 	std::cout << "LIGHTING MODEL SELECTED: " << lighting << "\n";
 
-	//objects
-	//create background square
-	BC_Square background;
-	background.init(60.f, 50.0f, 1.0f, w, h, 0.0f, 0.0f, -2.0f, "..//..//Assets//Textures//space.png");
-
-	BC_Square backdrop;
-	backdrop.init(70.f, 60.f, 1.0f, w, h, 0.0f, 0.0f, -2.0f, "..//..//Assets//Textures//borderBackground.png");
-	//create model
-	//could make this better by specifying the texture in this model header
-
 	skybox.init(w, h);
 	bubbles.init(5, w, h, lighting);
 	player.init(w, h, "..//..//Assets//Models//blenderCube.obj", "..//..//Assets//Textures//deathstar.png", lighting);
+	//borders.init(w, h, "..//..//Assets//Models//worldborders.obj", "..//..//Assets//Textures//deathstar.png", 0.0f, 0.0f, lighting);
 
 	for (int i = 0; i < player.health; i++) {
 		lives.push_back(life);
-		lives[i].init(2.0f, 2.0f, 1.0f, w, h, -0.4f + (i * 0.4f), -5.5f, -2.0f, "..//..//Assets//Textures//livesHeart.png");
+		lives[i].init(1.0f, 1.0f, 1.0f, w, h, -0.4f + (i * 0.4f), -5.5f, -2.0f, "..//..//Assets//Textures//livesHeart.png");
 	}
 
 	GLuint currentTime = 0;
@@ -242,13 +236,7 @@ int main(int argc, char *argv[]) {
 
 		//update camera matrix
 		//camera only moves side to side, formards and backwards (no rotation)
-		// set position, target, up direction
-
-		backdrop.update(cam);
-		backdrop.render();
-
-		background.update(cam);
-		background.render();
+		// set position, target, up directio
 
 		skybox.update(cam);
 		skybox.render();
@@ -257,6 +245,9 @@ int main(int argc, char *argv[]) {
 			lives[i].update(cam);
 			lives[i].render();
 		}
+
+		//borders.update(elapsedTime, cam, bX_r, bX_l, bY_t, bY_b);
+		//borders.render();
 
 		//sphere.update(elapsedTime, cam, bX_r, bX_l, bY_t, bY_b);
 		//sphere.render();
@@ -294,6 +285,7 @@ void handleInput()
 		{
 			windowOpen = false;
 		}
+
 		if (event.type == SDL_WINDOWEVENT)
 		{
 			switch (event.window.event)
@@ -302,20 +294,30 @@ void handleInput()
 				std::cout << "Window resized w:" << w << " h:" << h << std::endl;
 				SDL_GetWindowSize(win, &w, &h);
 				newwidth = h * aspect;
+				newheight = w / aspect;
 				left = (w - newwidth) / 2;
+				if (w < newwidth) {
+					SDL_SetWindowSize(win, newwidth, h);
+					left = 0;
+				}
 				glViewport(left, 0, newwidth, h);
-				break;
-				
-
-			default:
+				SDL_SetWindowPosition(win, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 				break;
 			}
 		}
-		
+
 		if (event.type == SDL_KEYDOWN)
 		{
 			switch (event.key.keysym.sym)
 			{
+
+			case SDLK_F10:
+				
+				isFullscreen = SDL_GetWindowFlags(win) & setFullscreen;
+				SDL_SetWindowFullscreen(win, isFullscreen ? 0 : setFullscreen);
+				SDL_SetWindowPosition(win, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+				break;
+
 			case SDLK_q:
 				//move camera 'forward' in the -ve z direction
 				cam.camZPos -= cam.camSpeed;

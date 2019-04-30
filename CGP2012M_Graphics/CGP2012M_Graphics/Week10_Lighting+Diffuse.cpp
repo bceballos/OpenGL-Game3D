@@ -147,7 +147,11 @@ BC_Skybox skybox;
 std::vector<BC_Square> lives;
 std::vector<BC_Bullet> bullets;
 
-int lighting = rand() % 2;
+int lighting;
+bool lightingSelect = false;
+
+int initW;
+int initH;
 
 int main(int argc, char *argv[]) {
 	//start and initialise SDL
@@ -158,6 +162,8 @@ int main(int argc, char *argv[]) {
 	SDL_GetWindowSize(win, &w, &h);
 	glViewport(0, 0, w, h);
 	aspect = (float)w / (float)h;
+	initW = w;
+	initH = h;
 
 	//GLEW initialise
 	glewExperimental = GL_TRUE;
@@ -171,12 +177,26 @@ int main(int argc, char *argv[]) {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
-	std::cout << "LIGHTING MODEL SELECTED: " << lighting << "\n";
+	do {
+		std::cout << "ENTER 1 FOR PHONG LIGHTING OR 2 FOR TOON LIGHTING \n";
+		std::cin >> lighting;
+		try {
+			throw lighting;
+		}
+		catch (int e) {
+			if (typeid(lighting).name() != typeid(int).name()) {
+				std::cout << "INVALID INPUT PLEASE TRY AGAIN" << std::endl;
+			}
+		}
+	} while (typeid(lighting).name() != typeid(int).name());
+
+	lighting -= 1;
+
 
 	skybox.init(w, h);
 	bubbles.init(5, w, h, lighting);
 	player.init(w, h, "..//..//Assets//Models//blenderCube.obj", "..//..//Assets//Textures//deathstar.png", lighting);
-	borders.init(w, h, "..//..//Assets//Models//Boundry.obj", "..//..//Assets//Textures//carbon-fibre-seamless-texture.jpg", 0.0f, 0.0f, lighting);
+	borders.init(w, h, "..//..//Assets//Models//blenderBoundary.obj", "..//..//Assets//Textures//carbon-fibre-seamless-texture.jpg", 0.0f, 0.0f, lighting);
 	//bullet.init(w, h, "..//..//Assets//Models//blenderCube.obj", "..//..//Assets//Textures//deathstar.png", player.position.x, player.position.y, lighting, player.movAngle);
 
 	for (int i = 0; i < player.health; i++) {
@@ -333,7 +353,12 @@ void handleInput()
 				
 				isFullscreen = SDL_GetWindowFlags(win) & setFullscreen;
 				SDL_SetWindowFullscreen(win, isFullscreen ? 0 : setFullscreen);
+				if (!isFullscreen) {
+					SDL_SetWindowSize(win, initW, initH);
+					glViewport(left, 0, initW, initH);
+				}
 				SDL_SetWindowPosition(win, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+
 				break;
 
 			case SDLK_q:

@@ -85,7 +85,7 @@ void BC_Player::update(Camera cam)
 		lightColourTwo = glm::vec3(1.0f, 0.0f, 0.0f);
 	}
 
-	if ((SDL_GetTicks() - startTicks >= 30000) && immortal) {
+	if ((SDL_GetTicks() - startTicks >= 3000) && immortal) {
 		immortal = false;
 		lightColourTwo = glm::vec3(1.0f, 1.0f, 0.98f);
 	}

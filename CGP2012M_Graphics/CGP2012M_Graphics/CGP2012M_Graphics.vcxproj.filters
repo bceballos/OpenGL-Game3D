@@ -66,6 +66,9 @@
     <ClInclude Include="BC_Boundary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BC_Bullet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Week10_Lighting+Diffuse.cpp">
@@ -93,6 +96,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BC_Boundary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BC_Bullet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

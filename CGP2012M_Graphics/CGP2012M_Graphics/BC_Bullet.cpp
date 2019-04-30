@@ -1,24 +1,27 @@
-#include "BC_Boundary.h"
+#include "BC_Bullet.h"
 
 
 
-BC_Boundary::BC_Boundary()
+BC_Bullet::BC_Bullet()
 {
 }
 
 
-BC_Boundary::~BC_Boundary()
+BC_Bullet::~BC_Bullet()
 {
 }
 
-void BC_Boundary::init(int w, int h, std::string modelPath, std::string texturePath, float offsetX, float offsetY, int lightingModel)
+void BC_Bullet::init(int w, int h, std::string modelPath, std::string texturePath, float offsetX, float offsetY, int lightingModel, float angle)
 {
-	vsh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_AD.vert");
+	//shaders
+	//vSh.shaderFileName("..//..//Assets//Shaders//shader_Projection_basicLight.vert");
+	//fSh.shaderFileName("..//..//Assets//Shaders//shader_Projection_basicLight.frag");
+	vsh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_ADPlayer.vert");
 	if (lightingModel == 0) {
-		fsh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_AD.frag");
+		fsh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_ADPlayer.frag");
 	}
 	else {
-		fsh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_AD_Toon.frag");
+		fsh.shaderFileName("..//..//Assets//Shaders//shader_projection_lighting_ADPlayer_Toon.frag");
 	}
 
 
@@ -43,8 +46,12 @@ void BC_Boundary::init(int w, int h, std::string modelPath, std::string textureP
 	modelScale = glm::mat4(1.0f);
 	modelTranslate = glm::mat4(1.0f);
 
-	modelScale = glm::scale(modelScale, glm::vec3(2.5f, 3.0f, 3.0f));
+	modelScale = glm::scale(modelScale, glm::vec3(0.2f, 0.2f, 0.2f));
 	modelTranslate = glm::translate(modelTranslate, glm::vec3(offsetX, offsetY, -1.0f));
+
+	movAngle = angle;
+	speed = 0.08f;
+	direction = glm::vec3((float)cos(movAngle), (float)sin(movAngle), 0.0f);
 
 	viewMatrix = glm::mat4(1.0f);
 	projectionMatrix = glm::perspective(glm::radians(60.0f), (float)w / (float)h, 0.1f, 100.0f);
@@ -53,8 +60,17 @@ void BC_Boundary::init(int w, int h, std::string modelPath, std::string textureP
 	setBuffers();
 }
 
-void BC_Boundary::update(Camera cam)
+void BC_Bullet::update(GLuint elapsedTime, Camera cam, float bX_r, float bX_l, float bY_t, float bY_b)
 {
+	if (firstUpdate) {
+		borderCollision(bX_r, bX_l, bY_t, bY_b);
+	}
+	firstUpdate = true;
+	if (!collided) {
+		modelTranslate = glm::translate(modelTranslate, direction * speed);
+		position = glm::vec3(modelTranslate[3][0], modelTranslate[3][1], modelTranslate[3][2]);
+	}
+
 	viewMatrix = glm::lookAt(glm::vec3(cam.camXPos, cam.camYPos, cam.camZPos), cam.cameraTarget, cam.cameraUp);
 
 	////set .obj model
@@ -66,6 +82,7 @@ void BC_Boundary::update(Camera cam)
 	lightPositionLocation = glGetUniformLocation(shaderProgram, "lightPos");
 	glUniform3fv(lightPositionLocation, 1, glm::value_ptr(lightPosition));
 	//rotation
+	modelRotate = glm::rotate(modelRotate, (float)elapsedTime / 2000, glm::vec3(0.0f, 1.0f, 0.0f));
 	importModelLocation = glGetUniformLocation(shaderProgram, "uModel");
 	glUniformMatrix4fv(importModelLocation, 1, GL_FALSE, glm::value_ptr(modelTranslate*modelRotate*modelScale));
 	importViewLocation = glGetUniformLocation(shaderProgram, "uView");
@@ -85,7 +102,7 @@ void BC_Boundary::update(Camera cam)
 	glBindTexture(GL_TEXTURE_2D, texture.texture);
 }
 
-void BC_Boundary::render()
+void BC_Bullet::render()
 {
 	//draw the square 
 	glBindVertexArray(VAO);
@@ -94,7 +111,7 @@ void BC_Boundary::render()
 	glBindVertexArray(0);
 }
 
-void BC_Boundary::setBuffers()
+void BC_Bullet::setBuffers()
 {
 	////interleave the vertex/texture/normal data
 	for (int i = 0; i < indices.size(); i += 3)
@@ -143,4 +160,14 @@ void BC_Boundary::setBuffers()
 
 	//Unbind the VAO
 	glBindVertexArray(0);
+}
+
+void BC_Bullet::borderCollision(float bX_r, float bX_l, float bY_t, float bY_b)
+{
+	if ((position.y > (bY_t - radius) - 1.2f) || (position.y < (bY_b - radius) + 1.2f)) {
+		collided = true;
+	}
+	else if ((position.x > (bX_r - radius) - 1.2f) || (position.x < (bX_l - radius) + 1.2f)) {
+		collided = true;
+	}
 }

@@ -47,6 +47,7 @@
 #include "BC_SphereManager.h"
 #include "BC_Skybox.h"
 #include "BC_Boundary.h"
+#include "BC_Bullet.h"
 
 #include <vector>
 
@@ -64,7 +65,7 @@ TO DO LIST
 	PLAYABLE GAME:
 		  CHARACTER CAN MOVE / ROTATE, BUBBLES MOVE 
 		  BUBBLES ARE CONSTRAINED WITHIN WORLD BOUNDARIES 
-		- BUBBLES ARE DESTROYED WHEN FIRED AT 
+		  BUBBLES ARE DESTROYED WHEN FIRED AT 
 		  PLAYER HAS 3 LIVES SHOWN ON A 2D HUD 
 		  OTHER GAMEPLAY FEATURE 
 
@@ -141,8 +142,12 @@ BC_SphereManager bubbles;
 BC_Boundary borders;
 BC_Square life;
 BC_Skybox skybox;
+//BC_Bullet bullet;
 
 std::vector<BC_Square> lives;
+std::vector<BC_Bullet> bullets;
+
+int lighting = rand() % 2;
 
 int main(int argc, char *argv[]) {
 	//start and initialise SDL
@@ -166,14 +171,13 @@ int main(int argc, char *argv[]) {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
-	srand(time(0));
-	int lighting = rand() % 2;
 	std::cout << "LIGHTING MODEL SELECTED: " << lighting << "\n";
 
 	skybox.init(w, h);
 	bubbles.init(5, w, h, lighting);
 	player.init(w, h, "..//..//Assets//Models//blenderCube.obj", "..//..//Assets//Textures//deathstar.png", lighting);
-	borders.init(w, h, "..//..//Assets//Models//Boundry.obj", "..//..//Assets//Textures//deathstar.png", 0.0f, 0.0f, lighting);
+	borders.init(w, h, "..//..//Assets//Models//Boundry.obj", "..//..//Assets//Textures//carbon-fibre-seamless-texture.jpg", 0.0f, 0.0f, lighting);
+	//bullet.init(w, h, "..//..//Assets//Models//blenderCube.obj", "..//..//Assets//Textures//deathstar.png", player.position.x, player.position.y, lighting, player.movAngle);
 
 	for (int i = 0; i < player.health; i++) {
 		lives.push_back(life);
@@ -256,8 +260,18 @@ int main(int argc, char *argv[]) {
 		//sphere.update(elapsedTime, cam, bX_r, bX_l, bY_t, bY_b);
 		//sphere.render();
 
-		bubbles.update(elapsedTime, cam, bX_r, bX_l, bY_t, bY_b, player);
+		bubbles.update(elapsedTime, cam, bX_r, bX_l, bY_t, bY_b, player, bullets);
 		/*bubbles.render();*/
+
+		for (int i = 0; i < bullets.size(); i++) {
+			bullets[i].update(elapsedTime, cam, bX_r, bX_l, bY_t, bY_b);
+			if (!bullets[i].collided) {
+				bullets[i].render();
+			}
+			else {
+				bullets.erase(bullets.begin() + i);
+			}
+		}
 
 		player.update(cam);
 		player.render();
@@ -332,6 +346,14 @@ void handleInput()
 				break;
 			case SDLK_l:
 				lightModel = !lightModel;
+				break;
+			case SDLK_SPACE:
+				if (bullets.size() == 0) {
+					std::cout << "BULLET HAS BEEN ADDED \n";
+					BC_Bullet attempt;
+					bullets.push_back(attempt);
+					bullets.back().init(w, h, "..//..//Assets//Models//blenderSphere.obj", "..//..//Assets//Textures//sun.png", player.position.x, player.position.y, lighting, player.movAngle);
+				}
 				break;
 			}
 		}
